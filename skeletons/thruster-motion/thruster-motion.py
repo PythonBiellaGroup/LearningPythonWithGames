@@ -3,6 +3,7 @@
 # Wireframe #4: Asteroids' thruster motion, pages 32-35
 
 import math
+import pgzrun
 
 # set screen width and height
 WIDTH = 800
@@ -52,3 +53,5 @@ def update():
 def draw():
     screen.clear()
     spaceship.draw()
+
+pgzrun.go()

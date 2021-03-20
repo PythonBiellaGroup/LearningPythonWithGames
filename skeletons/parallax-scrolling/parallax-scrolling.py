@@ -2,6 +2,7 @@
 # Wireframe #3 
 # Moon Patrol's illusion of depth, pages 32-33
 
+import pgzrun
 # set screen width and height
 WIDTH = 800
 HEIGHT = 400
@@ -38,3 +39,5 @@ def draw():
     # draw all images in the image list
     for l in layers:
         l.draw()
+
+pgzrun.go()

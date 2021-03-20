@@ -104,4 +104,4 @@ def draw():
 
         screen.draw.text('Game Over!', (420, 200), fontsize=40, color="white")
 
-pgzrun.go()        
+pgzrun.go()
