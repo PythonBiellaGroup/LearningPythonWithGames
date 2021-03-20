@@ -11,12 +11,3 @@ def draw():
 
 #Fa partire il programma
 pgzrun.go()
-
-# Esempio di assets.json
-# {
-#   "images": {
-#     "ficco": {
-#       "src": "https://raw.githubusercontent.com/PythonBiellaGroup/LearningPythonWithGames/main/01/images/snowflake.png"
-#     }
-#   }
-# }
