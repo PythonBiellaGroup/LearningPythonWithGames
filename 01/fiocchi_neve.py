@@ -1,3 +1,5 @@
+# NON VA, DA CONTRALLARE
+
 import datetime
 import pgzrun
 import random
@@ -6,7 +8,7 @@ WIDTH = 600
 HEIGHT = 300
 TEXT_COLOR = (255, 255, 0)
 SKY_COLOR = (0, 0, 0)
-NUMBER_OF_SNOWFLAKES = 10
+NUMBER_OF_SNOWFLAKES = 20
 
 snowflakes = []
 for i in range(NUMBER_OF_SNOWFLAKES):
@@ -24,16 +26,14 @@ def draw():
   hours = str(int(difference.seconds / (60 * 60))).zfill(2)
   days = str(difference.days)
 
-
   countdown = days + ":" + hours + ":" + minutes + ":" + seconds
 
-  screen.draw.text(countdown, centerx = WIDTH / 2, fontsize = 80, color = TEXT_COLOR)
+  screen.draw.text(countdown, centery = HEIGHT / 2, centerx = WIDTH / 2, fontsize = 80, color = TEXT_COLOR)
   for s in snowflakes:
     s.y = (s.y + 1) % HEIGHT
     s.x = (s.x + random.randint(0, 3)) % WIDTH
     s.angle += random.randint(0,1)
     s.draw()
-  
 
 pgzrun.go()
 
@@ -41,3 +41,12 @@ pgzrun.go()
 # 1) Change the sky colour to blue
 # 2) Make the snow blow across the screen faster
 # 3) Add more snowflakes
+
+# Esempio di assets.json
+# {
+#   "images": {
+#     "ficco": {
+#       "src": "https://raw.githubusercontent.com/PythonBiellaGroup/LearningPythonWithGames/main/01/images/snowflake.png"
+#     }
+#   }
+# }
