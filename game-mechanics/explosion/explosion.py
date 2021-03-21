@@ -1,11 +1,13 @@
 # https://github.com/Wireframe-Magazine/Wireframe-1
 # Wireframe #1 
 # The genius behind Defender's explosions, pages 32-33
-
+# LEVEL: Intermediate
+# TAGS: particles
+import pgzrun
 import random
 import math
 
-# the size of the screen
+# Size of the screen
 WIDTH = 800
 HEIGHT = 600
 
@@ -21,9 +23,7 @@ MAX_AGE = 3
 # an array to hold the details of the explosion particles on the screen
 particles = []
 
-
 # This function creates a new explosion at the specified screen co-ordinates
-
 def explode(x, y, speed=300):
 
     # these are new particles, so set their age to zero
@@ -45,12 +45,9 @@ def explode(x, y, speed=300):
 
 
 # This function redraws the screen by plotting each particle in the array
-
 def draw():
-
     # clear the screen
-    screen.clear()
-    
+    screen.clear()   
     # loop through all the particles in the array
     for x, y, *_ in particles:
         
@@ -59,48 +56,36 @@ def draw():
 
 
 # This function updates the array of particles
-
 def update(dt):
-
     # to update the particle array, create a new empty array
-    new_particles = []
-    
+    new_particles = []  
     # loop through the existing particle array
-    for (x, y, vx, vy, age) in particles:
-    
+    for (x, y, vx, vy, age) in particles:    
         # if a particle was created more than a certain time ago, it can be removed
         if age + dt > MAX_AGE:
-            continue
-            
+            continue            
         # update the particle's velocity - they slow down over time
         drag = DRAG ** dt
         vx *= drag
-        vy *= drag
-        
+        vy *= drag        
         # update the particle's position according to its velocity
         x += vx * dt
-        y += vy * dt
-        
+        y += vy * dt        
         # update the particle's age
-        age += dt
-        
+        age += dt        
         # add the particle's new position, velocity and age to the new array
-        new_particles.append((x, y, vx, vy, age))
-        
+        new_particles.append((x, y, vx, vy, age))        
     # replace the current array with the new one
     particles[:] = new_particles
 
-
 # This function creates an explosion at a random location on the screen
-
 def explode_random():
-
     # select a random position on the screen
     x = random.randrange(WIDTH)
-    y = random.randrange(HEIGHT)
-    
+    y = random.randrange(HEIGHT)    
     # call the explosion function for that position
     explode(x, y)
 
 # call the random explosion function every 1.5 seconds
 clock.schedule_interval(explode_random, 1.5)
+pgzrun.go()
