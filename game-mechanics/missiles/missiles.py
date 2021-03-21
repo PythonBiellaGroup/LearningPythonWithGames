@@ -1,3 +1,5 @@
+# https://github.com/Wireframe-Magazine/Wireframe-8
+# Wireframe #8: Missile Command's scary vapour trails, pages 32-33
 import pgzrun
 import random
 from collections import deque

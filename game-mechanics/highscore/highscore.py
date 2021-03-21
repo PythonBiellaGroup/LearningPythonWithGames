@@ -1,4 +1,4 @@
-# https://github.com/Wireframe-Magazine/Wireframe-5
+# https://github.com/Wireframe-Magazine/Wireframe-5cd 
 # Wireframe #5 Source 
 # A retro style high score table, pages 32-33
 
