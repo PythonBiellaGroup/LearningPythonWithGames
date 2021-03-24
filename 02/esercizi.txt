@@ -1,0 +1,59 @@
+1) Quale linea di codice scriverà “Ciao mondo” in console:
+a.say(“Ciao mondo”) 
+b.print(Ciao mondo)
+c.scrivi(Ciao mondo)
+d.print(“Ciao mondo”)
+
+2) Quali dei valori seguenti sono string ?
+a. True
+b. 5
+c. 6.7
+d. “False”
+e. Bay Coding Club
+f. 99
+
+3) Quale comando crea la variabile "cows" e memorizza il valore 7 come int?
+a. cows = 7
+b. cows = “7”
+c. int cows = 7 
+d. variable cows = “7”
+
+4) Quale di queste variabili non ha un nome valido?
+a. My_variable
+b. XxX_my_variable_XxX
+c. ____________my_variable____________
+d. 8o8___my_variable___8o8
+
+5) Se viene eseguito il codice
+animal = “cows”
+Quale comando mostra la parola “cows”?
+a. print(animal)
+b. print(“animal”)
+c. print(cows)
+d. #print(“cows”)
+
+6) Qual è l'output di questa sequenza di codice:
+number = 22
+color = “brown”
+number = 33
+color = “purple”
+print(color)
+color = “green”
+print(color)
+print(number)
+
+7) Quale comando è errato?
+my_name = “Ariana”
+my_color = “purple”
+print(“Hello, my name is”)
+print(my_name)
+print(“And my favorite color is)
+print(my_color)
+
+8) Scrivi un programma che memorizzi in tre variabili tre cose che preferisci
+(es cibo, colore, etc…) e poi le visualizzi a video
+
+9) Scrivi un programma che cambi il valore di una variabile per tre volte
+
+10) Scrivi un programma che mostri una piccola storia.
+Usa qualche variabile per poterla eventualmente cambiare facimente.
