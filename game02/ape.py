@@ -24,13 +24,11 @@ def draw():
             screen.draw.text("Tempo scaduto! Punteggio finale: " + str(punteggio), midtop=(WIDTH/2,10), 
             fontsize=40, color="red")
 
-
 def piazza_fiore():
     fiore.x = randint(70, (WIDTH-70))
     fiore.y = randint(70, (HEIGHT-70))
 
-
-def time_up():
+def tempo_scaduto():
     global game_over 
     game_over = True
 
@@ -46,13 +44,12 @@ def update():
     if keyboard.down:
         ape.y = ape.y + 2
 
-    fiori_collezionati = ape.colliderect(fiore)
+    fiore_raccolto = ape.colliderect(fiore)
 
-    if fiori_collezionati:
+    if fiore_raccolto:
         punteggio = punteggio + 10
         piazza_fiore()
 
 
-clock.schedule(time_up, 10.0)
+clock.schedule(tempo_scaduto, 10.0)
 pgzrun.go()
-
