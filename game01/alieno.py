@@ -21,7 +21,7 @@ def piazza_alieno():
 
 
 def on_mouse_down(pos):
-    global messaggio 
+    global messaggio
     if alieno.collidepoint(pos):
         messaggio = "Bel colpo!"
         piazza_alieno()

@@ -1,9 +1,9 @@
-import pgzrun
+cimport pgzrun
 from pygame import Color
 
 WIDTH = 4100
 HEIGHT = 750
-TITLE = "Named color chart"
+TITLE = "Tabella colori"
 
 
 COLORS = ['snow', 'ghost white', 'white smoke', 'gainsboro', 'floral white', 'old lace',

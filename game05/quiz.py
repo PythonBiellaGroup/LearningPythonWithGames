@@ -15,7 +15,7 @@ skip_box = Rect(0,0,150,330)
 
 score = 0
 time_left = 10
-question_file_name = "questions.txt"
+question_file_name = "domande.txt"
 marquee_message = ""
 is_game_over = False
 
@@ -45,8 +45,8 @@ def draw():
     for answer_box in answer_boxes:
         screen.draw.filled_rect(answer_box, "dark orange")
     
-    marquee_message = "Welcome To Quiz Master..."
-    marquee_message = marquee_message + f"Q: {question_index} of {question_count}"
+    marquee_message = "Benvenuti su Quiz Master..."
+    marquee_message = marquee_message + f"D: {question_index} of {question_count}"
 
     screen.draw.textbox(marquee_message, marquee_box, color="white")
     screen.draw.textbox(
@@ -121,7 +121,7 @@ def correct_answer():
 
 def game_over():
     global question, time_left, is_game_over
-    message = f"Game over!\nYou got {score} questions correct!"
+    message = f"Game over!\nHai risposto a {score} domande in modo corretto!"
     question = [message, "-","-","-","-",5]
     time_left = 0
     is_game_over = True
