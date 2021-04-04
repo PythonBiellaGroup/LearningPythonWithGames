@@ -1,6 +1,7 @@
 import pgzrun
 from random import randint
 
+TITLE = "Ape golosa"
 WIDTH = 600
 HEIGHT = 500
 

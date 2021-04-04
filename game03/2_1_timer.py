@@ -10,6 +10,7 @@ satelliti = []
 linee = []
 indice_prossimo_satellite = 0
 
+# Variabili per la gestione del tempo
 tempo_iniziale = 0
 tempo_totale = 0
 tempo_finale = 0
@@ -17,12 +18,14 @@ tempo_finale = 0
 numero_satelliti = 8
 
 def crea_satelliti():
-    global tempo_iniziale 
+    global tempo_iniziale
     for count in range(0, numero_satelliti):
         satellite = Actor("satellite")
         satellite.pos = randint(40, WIDTH-40), randint(40, HEIGHT-40)
         satelliti.append(satellite)
+    # Inizializza il tempo
     tempo_iniziale = time()
+    print(tempo_iniziale)
 
 
 def draw():
@@ -37,14 +40,16 @@ def draw():
     for line in linee:
         screen.draw.line(line[0], line[1], (255,255,255))
 
+    # Mostra 
     if indice_prossimo_satellite < numero_satelliti:
         tempo_totale = time() - tempo_iniziale
+        # Senza round l'intervallo di tempo ha molti decimali!
         screen.draw.text(str(round(tempo_totale,2)), (10,10), fontsize=30)
     else:
         screen.draw.text(str(round(tempo_totale,2)), (10,10), fontsize=30)
 
-def update():
-    pass
+# def update():
+#     pass
 
 def on_mouse_down(pos):
     global indice_prossimo_satellite, linee
