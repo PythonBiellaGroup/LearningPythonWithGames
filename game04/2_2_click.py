@@ -10,19 +10,17 @@ CENTRO_Y = HEIGHT / 2
 CENTRO = (CENTRO_X, CENTRO_Y)
 LIVELLO_FINALE = 8
 VEL_INIZIALE = 10
-# Il rosso non è presente perchè va gestito in modo particolare
 COLORI_STELLA = ["blu","verde","arancione","porpora","gialla"]
+
 
 game_over = False
 game_completato = False
+# livello_corrente: si parte con 1 stella rossa + 1 altra stella
 livello_corrente = 1
 stelle = []
 animazioni = []
 
 def draw():
-    '''
-    Funzione richiamata in automatico da PGZ
-    '''
     global stelle, livello_corrente, game_over, game_completato
     screen.clear()
     screen.blit("sfondo", (0,0))
@@ -33,24 +31,15 @@ def draw():
     else:
         for stella in stelle:
             stella.draw()
-    # if game_over or game_completato:
-    #     clock.unschedule(mischia_stelle)
-    
 
-# contatore = 0
 def update():
     '''
     Funzione richiamata in automatico da PGZ
+    circa 60 volte al secondo
     '''
     global stelle, contatore
     if len(stelle) == 0:
         stelle = genera_stelle(livello_corrente)
-    # else:
-    #     contatore = contatore + 1
-    #     if contatore % 30 == 0:
-    #         mostra_stelle(stelle)
-    #         contatore = 0
-
 
 def genera_stelle(numero_stelle_extra):
     '''
@@ -68,7 +57,6 @@ def genera_stelle(numero_stelle_extra):
     anima_stelle(stelle_nuove)
     return stelle_nuove
 
-
 def ottieni_colore_da_creare(numero_stelle_extra):
     '''
     Funzione per ottenere la lista dei colori delle stelle da creare
@@ -78,6 +66,7 @@ def ottieni_colore_da_creare(numero_stelle_extra):
     colori_da_creare = ["rossa"]
     for i in range(0, numero_stelle_extra):
         random_color = random.choice(COLORI_STELLA)
+        # Aggiunge il colore alla lista
         colori_da_creare.append(random_color)
     return colori_da_creare
 
@@ -90,9 +79,11 @@ def crea_stelle(colori_da_creare):
     '''
     stelle_nuove = []
     for colore in colori_da_creare:
+        # Combina le due stringhe per ottenere il file immagine corretto
         stella = Actor("stella" + colore )
         stelle_nuove.append(stella)
     return stelle_nuove
+
 
 def mostra_stelle(stelle_da_mostrare):
     '''
@@ -105,7 +96,6 @@ def mostra_stelle(stelle_da_mostrare):
     for indice, stella in enumerate(stelle_da_mostrare):
         nuova_pos_x = (indice + 1) * distanza
         stella.x = nuova_pos_x
-    
 
 def anima_stelle(stelle_da_animare):
     '''
@@ -113,17 +103,12 @@ def anima_stelle(stelle_da_animare):
     '''
     global animazioni
     for stella in stelle_da_animare:
+        # Durata dell'animazione
         durata = VEL_INIZIALE - livello_corrente
         stella.anchor = ("center","bottom")
+        # gestisci_game_over viene chiamata ad animazione terminata
         animazione = animate(stella, duration=durata, on_finished=gestisci_game_over, y=HEIGHT)
         animazioni.append(animazione)
-
-def gestisci_game_over():
-    '''
-    Funzione per la gestione del game over
-    '''
-    global game_over
-    game_over = True
 
 def on_mouse_down(pos):
     '''
@@ -136,6 +121,7 @@ def on_mouse_down(pos):
                 click_su_stella_rossa()
             else:
                 gestisci_game_over()
+
 
 def click_su_stella_rossa():
     '''
@@ -152,26 +138,27 @@ def click_su_stella_rossa():
         stelle = []
         animazioni = []
 
+
+def gestisci_game_over():
+    '''
+    Implementazione temporanea senza stop
+    '''
+    global livello_corrente, stelle, animazioni
+    stop_animazioni(animazioni)
+    livello_corrente = livello_corrente + 1
+    stelle = []
+    animazioni = []
+
 def stop_animazioni(animazioni_da_fermare):
     for animazione in animazioni_da_fermare:
         if animazione.running:
             animazione.stop()
 
 
+
+
 def mostra_messaggio(titolo, sottotitolo):
-    '''
-    Funzione per visualizzare i messaggi al centro dello schermo
-    titolo con font più grande
-    sottotitolo con font più piccolo
-    '''
     screen.draw.text(titolo, fontsize=60, center=CENTRO, color=FONT_COLOR)
     screen.draw.text(sottotitolo,fontsize=30, center=(CENTRO_X,CENTRO_Y+30), color=FONT_COLOR)
 
-# Variante mischia stelle
-#def mischia_stelle():
-#    if stelle:
-#        mostra_stelle(stelle)
-
-# Variante mischia stelle
-#clock.schedule_interval(mischia_stelle, 0.5)
 pgzrun.go()
