@@ -1,152 +1,182 @@
 import pgzrun
 
-TITLE = "Quiz Master"
+TITLE = "Quiz"
 WIDTH = 870
 HEIGHT = 650
 
-marquee_box = Rect(0,0,880,80)
-question_box = Rect(0,0,650,150)
+# Disegna componenti della GUI progettata
+scorrevole_box = Rect(0,0,880,80)
+domanda_box = Rect(0,0,650,150)
 timer_box = Rect(0,0,150,150)
-answer_box1 = Rect(0,0,300,150)
-answer_box2 = Rect(0,0,300,150)
-answer_box3 = Rect(0,0,300,150)
-answer_box4 = Rect(0,0,300,150)
-skip_box = Rect(0,0,150,330)
+risposta_box1 = Rect(0,0,300,150)
+risposta_box2 = Rect(0,0,300,150)
+risposta_box3 = Rect(0,0,300,150)
+risposta_box4 = Rect(0,0,300,150)
+salta_box = Rect(0,0,150,330)
 
-score = 0
-time_left = 10
-question_file_name = "domande.txt"
-marquee_message = ""
+# Variabili di gioco
+punteggio = 0
+secondi_mancanti = 10
+nome_file_domande = "domande.txt"
+msg_scorrevole = ""
 is_game_over = False
 
-answer_boxes = [answer_box1,answer_box2,answer_box3,answer_box4]
-questions = []
-question_count = 0
-question_index = 0
+risposte = [risposta_box1,risposta_box2,risposta_box3,risposta_box4]
+domande = []
+contatore_domande = 0
+indice_domande = 0
 
-marquee_box.move_ip(0,0)
-question_box.move_ip(20,100)
+# Posizionamento elementi nello schermo
+scorrevole_box.move_ip(0,0)
+domanda_box.move_ip(20,100)
 timer_box.move_ip(700,100)
-answer_box1.move_ip(20,270)
-answer_box2.move_ip(370,270)
-answer_box3.move_ip(20,450)
-answer_box4.move_ip(370,450)
-skip_box.move_ip(700,270)
+risposta_box1.move_ip(20,270)
+risposta_box2.move_ip(370,270)
+risposta_box3.move_ip(20,450)
+risposta_box4.move_ip(370,450)
+salta_box.move_ip(700,270)
 
 def draw():
-    global marquee_message
+    global msg_scorrevole
     screen.clear()
     screen.fill(color="black")
-    screen.draw.filled_rect(marquee_box, "black")
-    screen.draw.filled_rect(question_box, "navy blue")
+    screen.draw.filled_rect(scorrevole_box, "black")
+    screen.draw.filled_rect(domanda_box, "navy blue")
     screen.draw.filled_rect(timer_box, "navy blue")
-    screen.draw.filled_rect(skip_box, "dark green")
+    screen.draw.filled_rect(salta_box, "dark green")
 
-    for answer_box in answer_boxes:
-        screen.draw.filled_rect(answer_box, "dark orange")
+    for risposta_box in risposte:
+        screen.draw.filled_rect(risposta_box, "dark orange")
     
-    marquee_message = "Benvenuti su Quiz Master..."
-    marquee_message = marquee_message + f"D: {question_index} of {question_count}"
+    msg_scorrevole = "Quiz ..."
+    msg_scorrevole = msg_scorrevole + f"Domanda: {indice_domande} di {contatore_domande}"
 
-    screen.draw.textbox(marquee_message, marquee_box, color="white")
+    screen.draw.textbox(msg_scorrevole, scorrevole_box, color="white")
     screen.draw.textbox(
-        str(time_left),timer_box,
+        str(secondi_mancanti),timer_box,
         color="white", shadow=(0.5, 0.5),
         scolor="dim grey"
     )
     screen.draw.textbox(
-        "Skip", skip_box,
+        "Salta", salta_box,
         color="black", angle=-90
     )
     screen.draw.textbox(
-        question[0].strip(), question_box,
+        domanda[0].strip(), domanda_box,
         color="white", shadow=(0.5,0.5),
         scolor="dim grey"
     )
-    index = 1
-    for answer_box in answer_boxes:
-        screen.draw.textbox(question[index].strip(), answer_box, color="black")
-        index = index + 1
+    indice = 1
+    for risposta_box in risposte:
+        screen.draw.textbox(domanda[indice].strip(), risposta_box, color="black")
+        indice = indice + 1
 
 
 def update():
-    move_marquee()
+    '''
+    Funzione scorrimento scritta
+    '''
+    scorri_scritta()
 
 
-def move_marquee():
-    marquee_box.x = marquee_box.x - 2
-    if marquee_box.right < 0:
-        marquee_box.left = WIDTH
+def scorri_scritta():
+    '''
+    Funzione scorrimento scritta
+    '''
+    scorrevole_box.x = scorrevole_box.x - 2
+    if scorrevole_box.right < 0:
+        scorrevole_box.left = WIDTH
 
 
-def read_question_file():
-    global question_count, questions
-    q_file=open(question_file_name, "r")
-    for question in q_file:
-        questions.append(question)
-        question_count = question_count + 1
+def leggi_domande_da_file():
+    '''
+    Lettura delle domande dal file .txt
+    '''
+    global contatore_domande, domande
+    q_file=open(nome_file_domande, "r")
+    for domanda in q_file:
+        domande.append(domanda)
+        contatore_domande = contatore_domande + 1
     q_file.close()
 
 
-def read_next_question():
-    global question_index
-    question_index = question_index + 1
-    return questions.pop(0).split("|")
-
+def leggi_prossima_domanda():
+    '''
+    Avanzamento indice domande
+    '''
+    global indice_domande
+    indice_domande = indice_domande + 1
+    return domande.pop(0).split("|")
     
 
 def on_mouse_down(pos):
-    index = 1
-    for box in answer_boxes:
+    '''
+    Gestione del click dell'utente
+    '''
+    indice = 1
+    for box in risposte:
         if box.collidepoint(pos):
-            if index is int(question[5]):
-                correct_answer()
+            # int(domanda[5] è la risposta corretta
+            if indice is int(domanda[5]):
+                risposta_corretta()
             else:
                 game_over()
-        index = index + 1
+        indice = indice + 1
     
-    if skip_box.collidepoint(pos):
-        skip_question()
+    if salta_box.collidepoint(pos):
+        salta_domanda()
 
 
-def correct_answer():
-    global score, question, time_left, questions
-    score = score + 1
-    if questions:
-        question = read_next_question()
-        time_left = 10
+def risposta_corretta():
+    '''
+    Controllo risposta
+    '''
+    global punteggio, domanda, secondi_mancanti, domande
+    punteggio = punteggio + 1
+    if domande:
+        domanda = leggi_prossima_domanda()
+        secondi_mancanti = 10
     else:
         game_over()
 
 
 def game_over():
-    global question, time_left, is_game_over
-    message = f"Game over!\nHai risposto a {score} domande in modo corretto!"
-    question = [message, "-","-","-","-",5]
-    time_left = 0
+    '''
+    Gestione della fine del gioco
+    '''
+    global domanda, secondi_mancanti, is_game_over
+    messaggio = f"Game over!\nHai risposto a {punteggio} domande in modo corretto!"
+    domanda = [messaggio, "-","-","-","-",5]
+    secondi_mancanti = 0
     is_game_over = True
 
 
-def skip_question():
-    global question, time_left
-    if questions and not is_game_over:
-        question = read_next_question()
-        time_left = 10
+def salta_domanda():
+    '''
+    Gestione dello skip
+    '''
+    global domanda, secondi_mancanti
+    if domande and not is_game_over:
+        domanda = leggi_prossima_domanda()
+        secondi_mancanti = 10
     else:
         game_over()
 
 
-def update_time_left():
-    global time_left
-    if time_left:
-        time_left = time_left - 1
+def update_secondi_mancanti():
+    '''
+    Gestione dalla visualizzazione dei secondi mancanti
+    tramite clock.schedule_interval
+    '''
+    global secondi_mancanti
+    if secondi_mancanti:
+        secondi_mancanti = secondi_mancanti - 1
     else:
         game_over()
 
 
-read_question_file()
-question = read_next_question()
-clock.schedule_interval(update_time_left, 1)
+leggi_domande_da_file()
+domanda = leggi_prossima_domanda()
+clock.schedule_interval(update_secondi_mancanti, 1)
 
 pgzrun.go()
-    

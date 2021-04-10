@@ -1,7 +1,7 @@
-cimport pgzrun
+import pgzrun
 from pygame import Color
 
-WIDTH = 4100
+WIDTH = 1010
 HEIGHT = 750
 TITLE = "Tabella colori"
 
