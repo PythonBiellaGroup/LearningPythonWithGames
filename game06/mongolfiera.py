@@ -33,37 +33,41 @@ nuvole.append(nuvola3)
 uccello_up = True
 up = False
 game_over = False
-score = 0
-number_of_updates = 0
+punteggio = 0
+numero_aggiornamenti = 0
 
 high_scores = []
 
-def update_high_score():
-    global score, high_scores
+def aggiorna_high_score():
+    '''
+    Funzione per la lettura e l'aggiornamento
+    dei punteggi più alti
+    '''
+    global punteggio, high_scores
     high_scores = []
-    file_name = "high-score.txt"
+    nome_file = "high-score.txt"
 
     try:
-        with open(file_name, "r") as hsFile:
+        with open(nome_file, "r") as hsFile:
             for line in hsFile:
                 high_scores.append(int(line.rstrip()))
     except:
         pass
 
-    high_scores.append(score)
+    high_scores.append(punteggio)
     high_scores.sort(reverse=True)
 
-    with open(file_name, "w") as hsFile:
+    with open(nome_file, "w") as hsFile:
         for high_score in high_scores:
             hsFile.write(str(high_score) + "\n")
 
-def display_high_score():
+def mostra_high_score():
     global high_scores
     screen.draw.text("PUNTEGGI MIGLIORI", (350, 150), color="black")
     y = 175
     position = 1
-    for score in high_scores:
-        screen.draw.text(str(position) + ". " + str(score), (350, y), color="black")
+    for punteggio in high_scores:
+        screen.draw.text(str(position) + ". " + str(punteggio), (350, y), color="black")
         y += 25
         position += 1
 
@@ -78,13 +82,16 @@ def draw():
         casa.draw()
         albero.draw()
 
-        screen.draw.text("Punteggio: " + str(score), (700,5), color="navy blue")
+        screen.draw.text("Punteggio: " + str(punteggio), (700,5), color="navy blue")
     else:
-        display_high_score()
+        mostra_high_score()
         screen.draw.text("GAME OVER!", center=(WIDTH/2, 50), color = "red", fontsize=50)
 
 
 def on_mouse_down():
+    '''
+    La posizione della mongolfiera è gestita dalla rotella del mouse
+    '''
     global up
     up = True
     mongolfiera.y -= 50
@@ -94,6 +101,9 @@ def on_mouse_up():
     up = False
 
 def flap():
+    '''
+    Funzione per la gestione del movimento d'ali dell'uccello
+    '''
     global uccello_up
     if uccello_up:
         uccello.image = "uccello-down"
@@ -103,7 +113,12 @@ def flap():
         uccello_up = True
 
 def update():
-    global game_over, score, number_of_updates
+    '''
+    Funzione di aggiornamento richiamata da PGZ
+    Il punteggio aumenta ogni qual volta viene schivato 
+    un oggetto che esce di scena
+    '''
+    global game_over, punteggio, numero_aggiornamenti
 
     if not game_over:
         if not up:
@@ -111,16 +126,16 @@ def update():
         
         if uccello.x > 0:
             uccello.x -= 4
-            if number_of_updates == 9:
+            if numero_aggiornamenti == 9:
                 flap()
-                number_of_updates = 0
+                numero_aggiornamenti = 0
             else:
-                number_of_updates += 1
+                numero_aggiornamenti += 1
         else:
             uccello.x = randint(800, 1600)
             uccello.y = randint(10, 200)
-            score += 1
-            number_of_updates = 0
+            punteggio += 1
+            numero_aggiornamenti = 0
         
         for nuvola in nuvole:
             if nuvola.right > 0:
@@ -132,22 +147,25 @@ def update():
             casa.x -= 2
         else:
             casa.x = randint(800, 1600)
-            score += 1
+            punteggio += 1
 
         if albero.right > 0:
             albero.x -= 4
         else:
             albero.x = randint(800, 1600)
-            score += 1
+            punteggio += 1
 
+        # Il gioco finisce se la mongolfiera esce dallo schermo in alto o basso...
         if mongolfiera.top < 0 or mongolfiera.bottom > 560:
             game_over = True
-            update_high_score()
+            aggiorna_high_score()
+            #print("Mongolfiera uscita")
         
+        # oppure se c'è collisioni con gli oggetti uccello, casa, albero
         if mongolfiera.collidepoint(uccello.x, uccello.y) or mongolfiera.collidepoint(casa.x, casa.y) or mongolfiera.collidepoint(albero.x, albero.y):
             game_over = True
-            update_high_score()
+            aggiorna_high_score()
+            #print("Contatto")
             
 
 pgzrun.go()
-

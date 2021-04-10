@@ -5,142 +5,146 @@ TITLE = "Flappy Bird"
 WIDTH = 800
 HEIGHT = 700
 
-GAP = 100 # change to 100 instead of 130
-FLAP_STRENGTH = 5
-SPEED = 5  # change to 4 instead of 2
-GRAVITY = 0.5  # change to 0.5 instead of 0.3
-PIPE_DIST = 400
+# Parametri di gioco, trova quelli più giocabili
+GAP = 130 # change to 100 instead of 130
+FORZA_BATTITO_ALI = 5
+VELOCITA = 3  # change to 4 instead of 2
+GRAVITA = 0.5  # change to 0.5 instead of 0.3
+DIST_TUBO = 600
 
-bird = Actor("bird0", (80,300))
-bird.dead = False
-bird.hit = False
-bird.score = 0
-bird.vy = 0
+uccello = Actor("uccello0", (80,300))
+# Diamo degli attributi ad Actor
+uccello.morto = False
+uccello.colpito = False
+uccello.punteggio = 0
+uccello.vy = 0
 
-pipe_top1 = Actor("up", anchor=("left", "bottom"))
-pipe_bottom1 = Actor("bottom", anchor=("left", "top"))
+tubo_top1 = Actor("sopra", anchor=("left", "bottom"))
+tubo_bottom1 = Actor("sotto", anchor=("left", "top"))
 
-pipe_top2 = Actor("up", anchor=("left", "bottom"))
-pipe_bottom2 = Actor("bottom", anchor=("left", "top"))
+tubo_top2 = Actor("sopra", anchor=("left", "bottom"))
+tubo_bottom2 = Actor("sotto", anchor=("left", "top"))
 
-storage = {"highscore":0}
-game_start = False
+dizionario = {"highscore":0}
+inzio_gioco = False
 
 def draw():
-    screen.blit("background", (0,0))
-    pipe_top1.draw()
-    pipe_bottom1.draw()
-    pipe_top2.draw()
-    pipe_bottom2.draw()
-    bird.draw()
+    screen.blit("sfondo", (0,0))
+    tubo_top1.draw()
+    tubo_bottom1.draw()
+    tubo_top2.draw()
+    tubo_bottom2.draw()
+    uccello.draw()
 
+    # Punteggio attuale
     screen.draw.text(
-        str(bird.score),
+        str(uccello.punteggio),
         color = "red",
         midtop = (WIDTH/2, 10),
         fontsize = 70,
         shadow = (1,1)
     )
+    # Punteggio migliore
     screen.draw.text(
-        "Best: " + str(storage["highscore"]),
+        "Migliore: " + str(dizionario["highscore"]),
         color = (200, 170, 0),
         midbottom = (WIDTH/2, HEIGHT - 10),
         fontsize = 30,
         shadow = (1,1)
     )
-    if not game_start:
+    if not inzio_gioco:
         screen.draw.text(
-            "Press any key to start", color = "yellow",
+            "Premi un tasto qualsiasi", color = "yellow",
             center = (WIDTH/2, HEIGHT/2),
             fontsize = 60, owidth = 0.5, ocolor = "black"
         )
 
-def set_pipe():
-    pipe_gap_y1 = randint(200, HEIGHT-200)
-    pipe_top1.pos = (WIDTH/2, pipe_gap_y1 - GAP/2)
-    pipe_bottom1.pos = (WIDTH/2, pipe_gap_y1 + GAP/2)
+def set_tubo():
+    tubo_gap_y1 = randint(200, HEIGHT-200)
+    tubo_top1.pos = (WIDTH/2, tubo_gap_y1 - GAP/2)
+    tubo_bottom1.pos = (WIDTH/2, tubo_gap_y1 + GAP/2)
     
-    pipe_gap_y2 = randint(200, HEIGHT-200)
-    pipe_top2.pos = (WIDTH/2 + PIPE_DIST, pipe_gap_y2 - GAP/2)
-    pipe_bottom2.pos = (WIDTH/2 + PIPE_DIST, pipe_gap_y2 + GAP/2)
+    tubo_gap_y2 = randint(200, HEIGHT-200)
+    tubo_top2.pos = (WIDTH/2 + DIST_TUBO, tubo_gap_y2 - GAP/2)
+    tubo_bottom2.pos = (WIDTH/2 + DIST_TUBO, tubo_gap_y2 + GAP/2)
 
-def reset_pipe():
-    if pipe_top1.right < 0:
-        pipe_gap_y1 = randint(200, HEIGHT-200)
-        pipe_top1.pos = (WIDTH, pipe_gap_y1 - GAP/2)
-        pipe_bottom1.pos = (WIDTH, pipe_gap_y1 + GAP/2)
+def reset_tubo():
+    if tubo_top1.right < 0:
+        tubo_gap_y1 = randint(200, HEIGHT-200)
+        tubo_top1.pos = (WIDTH, tubo_gap_y1 - GAP/2)
+        tubo_bottom1.pos = (WIDTH, tubo_gap_y1 + GAP/2)
 
-    if pipe_top2.right < 0:
-        pipe_gap_y2 = randint(200, HEIGHT-200)
-        pipe_top2.pos = (WIDTH, pipe_gap_y2 - GAP/2)
-        pipe_bottom2.pos = (WIDTH, pipe_gap_y2 + GAP/2)
+    if tubo_top2.right < 0:
+        tubo_gap_y2 = randint(200, HEIGHT-200)
+        tubo_top2.pos = (WIDTH, tubo_gap_y2 - GAP/2)
+        tubo_bottom2.pos = (WIDTH, tubo_gap_y2 + GAP/2)
 
 
-def update_pipe():
-    global storage
-    pipe_top1.left -= SPEED
-    pipe_bottom1.left -= SPEED
-    pipe_top2.left -= SPEED
-    pipe_bottom2.left -= SPEED
+def update_tubo():
+    global dizionario
+    tubo_top1.left -= VELOCITA
+    tubo_bottom1.left -= VELOCITA
+    tubo_top2.left -= VELOCITA
+    tubo_bottom2.left -= VELOCITA
 
-    if pipe_top1.right < 0 or pipe_top2.right < 0:
-        if not bird.dead:
-            bird.score += 1
-        reset_pipe()
+    if tubo_top1.right < 0 or tubo_top2.right < 0:
+        if not uccello.morto:
+            uccello.punteggio += 1
+        reset_tubo()
     
-    if bird.score > storage["highscore"]:
-        storage["highscore"] = bird.score
+    if uccello.punteggio > dizionario["highscore"]:
+        dizionario["highscore"] = uccello.punteggio
 
 
-def update_bird():
-    global game_start
-    uy = bird.vy
-    bird.vy += GRAVITY
-    bird.y += (uy + bird.vy)/2
-    bird.x = 80
+def update_uccello():
+    global inzio_gioco
+    uy = uccello.vy
+    uccello.vy += GRAVITA
+    uccello.y += (uy + uccello.vy)/2
+    uccello.x = 80
 
-    if not bird.dead:
-        if bird.vy < -3:
-            bird.image = "bird2"
+    if not uccello.morto:
+        if uccello.vy < -3:
+            uccello.image = "uccello2"
         else:
-            bird.image = "bird1"
+            uccello.image = "uccello1"
 
-    if bird.colliderect(pipe_top1) or bird.colliderect(pipe_bottom1) or \
-        bird.colliderect(pipe_top2) or bird.colliderect(pipe_bottom2):
-        bird.dead = True
-        if bird.dead and not bird.hit:
+    if uccello.colliderect(tubo_top1) or uccello.colliderect(tubo_bottom1) or \
+        uccello.colliderect(tubo_top2) or uccello.colliderect(tubo_bottom2):
+        uccello.morto = True
+        if uccello.morto and not uccello.colpito:
             sounds.bang.play()
-            bird.image = "birdhit"
-            bird.hit = True
-            clock.schedule(set_bird_dead, 0.1)
+            uccello.image = "uccellocolpito"
+            uccello.colpito = True
+            clock.schedule(set_uccello_morto, 0.1)
 
-    if not 0 < bird.y < 740:
-        bird.image = "bird0"
-        bird.y = 200
-        bird.dead = False
-        bird.hit = False
-        bird.score = 0
-        bird.vy = 0
-        set_pipe()
-        game_start = False
+    if not 0 < uccello.y < 740:
+        uccello.image = "uccello0"
+        uccello.y = 200
+        uccello.morto = False
+        uccello.colpito = False
+        uccello.punteggio = 0
+        uccello.vy = 0
+        set_tubo()
+        inzio_gioco = False
     
 
-def set_bird_dead():
-    if bird.dead:
-        bird.image = "birddead"
+def set_uccello_morto():
+    if uccello.morto:
+        uccello.image = "uccellomorto"
 
 def on_key_down():
-    global game_start
-    game_start = True
+    global inzio_gioco
+    inzio_gioco = True
 
-    if not bird.dead:
-        bird.vy = -FLAP_STRENGTH
+    if not uccello.morto:
+        uccello.vy = -FORZA_BATTITO_ALI
 
 def update():
-    if game_start:
-        update_pipe()
-        update_bird()
+    if inzio_gioco:
+        update_tubo()
+        update_uccello()
 
-set_pipe()
+set_tubo()
 music.play("electroman")
 pgzrun.go()
