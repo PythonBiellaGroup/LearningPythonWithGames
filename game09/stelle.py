@@ -4,22 +4,22 @@ import math
 
 WIDTH = 1000
 HEIGHT = 700
-TITLE = "Star Collector"
-CENTER_X = WIDTH/2
-CENTER_Y = HEIGHT/2
-CENTER = (CENTER_X, CENTER_Y)
-ROCKET_SPEED = 5
-COLLISION_DISTANCE = 50
+TITLE = "Stelle"
+CENTRO_X = WIDTH/2
+CENTRO_Y = HEIGHT/2
+CENTRO = (CENTRO_X, CENTRO_Y)
+VEL_RAZZO = 5
+DISTANZA_DI_COLLISIONE = 50
 
 happy_star_list = []
 hot_star_list = []
 score = 0
 
-rocket = Actor("rocket", pos=CENTER)
-rocket.images = ["explosion1","explosion2","explosion3","explosion4"]
-rocket.state = 0
-rocket.lives = 3
-rocket.hit = False
+razzo = Actor("razzo", pos=CENTRO)
+razzo.images = ["explosion1","explosion2","explosion3","explosion4"]
+razzo.state = 0
+razzo.lives = 3
+razzo.hit = False
 
 def draw():
     screen.clear()
@@ -30,19 +30,19 @@ def draw():
         happy_star.draw()
     for hot_star in hot_star_list:
         hot_star.draw()
-    rocket.draw()
+    razzo.draw()
 
-    if rocket.hit:
-        if rocket.lives > 0:
+    if razzo.hit:
+        if razzo.lives > 0:
             screen.draw.text(
                 "YOU ARE HIT!\nPress ENTER to re-spawn",
-                center=CENTER, owidth = 0.5, ocolor = "white",
+                center=CENTRO, owidth = 0.5, ocolor = "white",
                 color = (255,64,0), fontsize=60
             )
         else:
             screen.draw.text(
                 "GAME OVER!\nPress ENTER to continue playing",
-                center = CENTER, owidth=0.5, ocolor="white",
+                center = CENTRO, owidth=0.5, ocolor="white",
                 color=(255,64,0), fontsize=60
             )
 
@@ -55,51 +55,51 @@ def update():
     check_happy_star_collision()
     check_hot_star_collision()
 
-    if rocket.hit:
+    if razzo.hit:
         rocket_explode()
         if keyboard.RETURN:
-            if rocket.lives is 0:
-                rocket.lives = 3
+            if razzo.lives is 0:
+                razzo.lives = 3
                 score = 0
             init_game()
 
 def draw_life():
-    for lv in range(rocket.lives):
+    for lv in range(razzo.lives):
         screen.blit("life", (10+(lv*32),10))
 
 def draw_score():
     global score
     screen.draw.text(
         str(score),
-        pos=(CENTER_X,10), color="red",
+        pos=(CENTRO_X,10), color="red",
         fontsize=60, owidth=0.5, ocolor="black",
         shadow=(1,1), scolor="black"
     )    
 
 def check_keys():
-    if not rocket.hit:
-        if keyboard.right and rocket.x < WIDTH:
-            rocket.angle = -90
-            rocket.x += ROCKET_SPEED
-        elif keyboard.left and rocket.x > 0:
-            rocket.angle = 90
-            rocket.x -= ROCKET_SPEED
-        elif keyboard.up and rocket.y > 0:
-            rocket.angle = 0
-            rocket.y -= ROCKET_SPEED
-        elif keyboard.down and rocket.y < HEIGHT:
-            rocket.angle = 180
-            rocket.y += ROCKET_SPEED
+    if not razzo.hit:
+        if keyboard.right and razzo.x < WIDTH:
+            razzo.angle = -90
+            razzo.x += VEL_RAZZO
+        elif keyboard.left and razzo.x > 0:
+            razzo.angle = 90
+            razzo.x -= VEL_RAZZO
+        elif keyboard.up and razzo.y > 0:
+            razzo.angle = 0
+            razzo.y -= VEL_RAZZO
+        elif keyboard.down and razzo.y < HEIGHT:
+            razzo.angle = 180
+            razzo.y += VEL_RAZZO
 
 def add_star():
     global happy_star_list
-    if not rocket.hit:
-        new_happy_star = Actor("star")
+    if not razzo.hit:
+        new_happy_star = Actor("stella")
         new_happy_star.pos = randint(50, WIDTH-50), randint(50, HEIGHT-50)
         happy_star_list.append(new_happy_star)
 
 def update_star():
-    if not rocket.hit:
+    if not razzo.hit:
         for hot_star in hot_star_list:
             hot_star.x += hot_star.vx 
             hot_star.y += hot_star.vy
@@ -115,7 +115,7 @@ def update_star():
 
 def mutate_star():
     global happy_star_list, hot_star_list
-    if not rocket.hit and happy_star_list:
+    if not razzo.hit and happy_star_list:
         rand_star = randint(0, len(happy_star_list)-1)
         hot_star_pos_x = happy_star_list[rand_star].x 
         hot_star_pos_y = happy_star_list[rand_star].y 
@@ -138,40 +138,40 @@ def star_velocity():
 
 def check_happy_star_collision():
     global score, happy_star_list
-    if not rocket.hit:
+    if not razzo.hit:
         for index in range(0, len(happy_star_list)-1):
-            if happy_star_list[index].colliderect(rocket):
+            if happy_star_list[index].colliderect(razzo):
                 score += 1
                 sounds.eep.play()
                 del happy_star_list[index]
 
 def check_hot_star_collision():
     global hot_star_list
-    if not rocket.hit:
+    if not razzo.hit:
         for index in range(0, len(hot_star_list)-1):
-            distance = rocket.distance_to(hot_star_list[index])
-            if not rocket.hit and distance < COLLISION_DISTANCE:
-                rocket.lives -= 1
+            distance = razzo.distance_to(hot_star_list[index])
+            if not razzo.hit and distance < DISTANZA_DI_COLLISIONE:
+                razzo.lives -= 1
                 del hot_star_list[index]
-                rocket.hit = True
+                razzo.hit = True
 
 def rocket_explode():
-    if rocket.hit:
-        if rocket.state is 0:
+    if razzo.hit:
+        if razzo.state is 0:
             sounds.explosion.play()
         
-        if rocket.state < 90:
-            rocket.state += 1
-            rocket.image = rocket.images[math.floor(rocket.state/30)]
+        if razzo.state < 90:
+            razzo.state += 1
+            razzo.image = razzo.images[math.floor(razzo.state/30)]
 
 def init_game():
     global happy_star_list, hot_star_list
     happy_star_list = []
     hot_star_list = []
-    rocket.image = "rocket"
-    rocket.pos = CENTER
-    rocket.state = 0
-    rocket.hit = False
+    razzo.image = "razzo"
+    razzo.pos = CENTRO
+    razzo.state = 0
+    razzo.hit = False
 
 
 clock.schedule_interval(add_star, 2)

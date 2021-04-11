@@ -2,11 +2,11 @@ import pgzrun
 from random import randint
 import math
 
-TITLE = "Space Invasion"
+TITLE = "Invasione dallo spazio"
 WIDTH = 800
 HEIGHT = 700
-CENTER_X = WIDTH / 2
-CENTER_Y = HEIGHT / 2
+CENTRO_X = WIDTH / 2
+CENTRO_Y = HEIGHT / 2
 
 aliens = []
 lasers = []
@@ -19,7 +19,7 @@ initial_player_position = (400, 600)
 player = Actor("player", initial_player_position)
 
 def draw():
-    screen.blit("background", (0,0))
+    screen.blit("sfondo", (0,0))
     player.image = player.images[math.floor(player.status/6)]
     player.draw()
     draw_aliens()
@@ -30,17 +30,17 @@ def draw():
         ocolor = (255,255,255), color=(0,64,255), fontsize=60
     )
     if len(aliens) == 0:
-        draw_center_text("YON WON!\nPress ENTER to play again")
+        draw_center_text("HAI VINTO!\nPremi INVIO per giocare ancora")
     if player.status >= 30:
         if player.lives == 0:
-            draw_center_text("GAME OVER\nPress ENTER to play again")
+            draw_center_text("GAME OVER\nPremi INVIO per giocare ancora")
         else:
-            draw_center_text("YOU WERE HIT\nPress ENTER to re-spawn")
+            draw_center_text("SEI STATO COLPITO\nPremi INVIO per il prossimo livello")
 
             
 def draw_center_text(message):
     screen.draw.text(
-        message, center = (CENTER_X,CENTER_Y),
+        message, center = (CENTRO_X,CENTRO_Y),
         owidth = 0.5, ocolor = (255,255,255), color = (255,64,0),
         fontsize = 60
     )
@@ -48,7 +48,7 @@ def draw_center_text(message):
 
 def draw_lives():
     for lv in range(player.lives):
-        screen.blit("life", (10 + (lv*32), 10))
+        screen.blit("vita", (10 + (lv*32), 10))
 
 
 def update():

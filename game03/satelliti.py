@@ -34,8 +34,8 @@ def draw():
         satellite.draw()
         numero = numero + 1
     
-    for line in linee:
-        screen.draw.line(line[0], line[1], (255,255,255))
+    for linea in linee:
+        screen.draw.line(linea[0], linea[1], (255,255,255))
 
     if indice_prossimo_satellite < numero_satelliti:
         tempo_totale = time() - tempo_iniziale
