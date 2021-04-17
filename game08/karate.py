@@ -17,7 +17,7 @@ mossa_corrente = 0
 contatore = 4
 durata_combattimento = 4
 
-dici_combatti = False
+combatti = False
 mostra_contoallarovescia = False
 mosse_completate = False
 game_over = False
@@ -38,7 +38,7 @@ sinistra = Actor("sinistra")
 sinistra.pos = CENTER_X - 60, CENTER_Y - 170
 
 def draw():
-    global game_over, punteggio, dici_combatti, contatore, mostra_contoallarovescia, inizio_gioco
+    global game_over, punteggio, combatti, contatore, mostra_contoallarovescia, inizio_gioco
     screen.clear()
     screen.blit("stage", (0,0))
     karate_kid.draw()
@@ -51,7 +51,7 @@ def draw():
         color = "black", topleft = (10,10),
         fontsize = 30
     )
-    if dici_combatti:
+    if combatti:
         screen.draw.text(
             "Combatti!", color = "white",
             topleft = (CENTER_X - 65, CENTER_Y + 200),
@@ -137,11 +137,11 @@ def aggiorna_karate_kid(mossa):
         sounds.shout.play()
 
 def genera_mosse():
-    global lista_mosse, durata_combattimento, contatore, mostra_contoallarovescia, dici_combatti, turni
+    global lista_mosse, durata_combattimento, contatore, mostra_contoallarovescia, combatti, turni
  
     contatore = 4
     lista_mosse = []
-    dici_combatti = False
+    combatti = False
 
     turni += 1
     if turni % 3 == 0:
@@ -157,7 +157,7 @@ def genera_mosse():
 
 def mostra_mosse():
     global lista_mosse, mostra_lista, durata_combattimento
-    global dici_combatti, mostra_contoallarovescia, mossa_corrente
+    global combatti, mostra_contoallarovescia, mossa_corrente
 
     if mostra_lista:
         questa_mossa = mostra_lista[0]
@@ -178,7 +178,7 @@ def mostra_mosse():
         #     aggiorna_karate_kid(3)
         #     clock.schedule(mostra_mosse, 1)
     else:
-        dici_combatti = True
+        combatti = True
         mostra_contoallarovescia = False
 
 def contoallarovescia():

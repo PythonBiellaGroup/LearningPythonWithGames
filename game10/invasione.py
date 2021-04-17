@@ -121,10 +121,10 @@ def aggiorna_lasers():
 
 
 def pulizia_lista(l):
-    new_list = []
+    nuova_lista = []
     for i in range(len(l)):
-        if l[i].status == 0: new_list.append(l[i])
-    return new_list
+        if l[i].status == 0: nuova_lista.append(l[i])
+    return nuova_lista
 
 def giocatore_colpisce(laser):
     global punteggio

@@ -11,73 +11,74 @@ CENTRO = (CENTRO_X, CENTRO_Y)
 VEL_RAZZO = 5
 DISTANZA_DI_COLLISIONE = 50
 
-happy_star_list = []
-hot_star_list = []
-score = 0
+lista_stelle_felici = []
+lista_stelle_calde = []
+punteggio = 0
 
 razzo = Actor("razzo", pos=CENTRO)
-razzo.images = ["explosion1","explosion2","explosion3","explosion4"]
-razzo.state = 0
-razzo.lives = 3
-razzo.hit = False
+# Sequenza esplosione
+razzo.img_esplosione = ["explosion1","explosion2","explosion3","explosion4"]
+razzo.stato = 0
+razzo.vite = 3
+razzo.colpito = False
 
 def draw():
     screen.clear()
-    screen.blit("background", (0,0))
-    draw_score()
-    draw_life()
-    for happy_star in happy_star_list:
-        happy_star.draw()
-    for hot_star in hot_star_list:
-        hot_star.draw()
+    screen.blit("sfondo", (0,0))
+    mostra_punteggio()
+    mostra_vite()
+    for stella_felice in lista_stelle_felici:
+        stella_felice.draw()
+    for stella_calda in lista_stelle_calde:
+        stella_calda.draw()
     razzo.draw()
 
-    if razzo.hit:
-        if razzo.lives > 0:
+    if razzo.colpito:
+        if razzo.vite > 0:
             screen.draw.text(
-                "YOU ARE HIT!\nPress ENTER to re-spawn",
+                "COLPITO!\nPremi INVIO per continuare",
                 center=CENTRO, owidth = 0.5, ocolor = "white",
                 color = (255,64,0), fontsize=60
             )
         else:
             screen.draw.text(
-                "GAME OVER!\nPress ENTER to continue playing",
+                "GAME OVER!\nPremi INVIO per ricominciare",
                 center = CENTRO, owidth=0.5, ocolor="white",
                 color=(255,64,0), fontsize=60
             )
 
 
 def update():
-    global score
+    global punteggio
+    controlla_tasti()
+    aggiorna_stella()
+    controlla_collisione_stella_felice()
+    controlla_collisione_stella_calda()
+    # Gestione urto con stella calda
+    if razzo.colpito:
+        razzo_esplode()
+        if keyboard.RETURN:            
+            if razzo.vite == 0:
+                # Ricomincia il gioco
+                razzo.vite = 3
+                punteggio = 0
+            inizia_gioco()
 
-    check_keys()
-    update_star()
-    check_happy_star_collision()
-    check_hot_star_collision()
+def mostra_vite():
+    for v in range(razzo.vite):
+        screen.blit("vita", (10+(v*32),10))
 
-    if razzo.hit:
-        rocket_explode()
-        if keyboard.RETURN:
-            if razzo.lives is 0:
-                razzo.lives = 3
-                score = 0
-            init_game()
-
-def draw_life():
-    for lv in range(razzo.lives):
-        screen.blit("life", (10+(lv*32),10))
-
-def draw_score():
-    global score
+def mostra_punteggio():
+    global punteggio
     screen.draw.text(
-        str(score),
+        str(punteggio),
         pos=(CENTRO_X,10), color="red",
         fontsize=60, owidth=0.5, ocolor="black",
         shadow=(1,1), scolor="black"
     )    
 
-def check_keys():
-    if not razzo.hit:
+def controlla_tasti():
+    if not razzo.colpito:
         if keyboard.right and razzo.x < WIDTH:
             razzo.angle = -90
             razzo.x += VEL_RAZZO
@@ -91,89 +92,89 @@ def check_keys():
             razzo.angle = 180
             razzo.y += VEL_RAZZO
 
-def add_star():
-    global happy_star_list
-    if not razzo.hit:
-        new_happy_star = Actor("stella")
-        new_happy_star.pos = randint(50, WIDTH-50), randint(50, HEIGHT-50)
-        happy_star_list.append(new_happy_star)
+def aggiungi_stella():
+    global lista_stelle_felici
+    if not razzo.colpito:
+        nuova_stella_felice = Actor("stella")
+        nuova_stella_felice.pos = randint(50, WIDTH-50), randint(50, HEIGHT-50)
+        lista_stelle_felici.append(nuova_stella_felice)
 
-def update_star():
-    if not razzo.hit:
-        for hot_star in hot_star_list:
-            hot_star.x += hot_star.vx 
-            hot_star.y += hot_star.vy
+def aggiorna_stella():
+    if not razzo.colpito:
+        for stella_calda in lista_stelle_calde:
+            stella_calda.x += stella_calda.vx 
+            stella_calda.y += stella_calda.vy
 
-            if hot_star.left < 0:
-                hot_star.vx = -hot_star.vx
-            if hot_star.right > WIDTH:
-                hot_star.vx = -hot_star.vx
-            if hot_star.top < 0:
-                hot_star.vy = -hot_star.vy
-            if hot_star.bottom > HEIGHT:
-                hot_star.vy = -hot_star.vy
+            if stella_calda.left < 0:
+                stella_calda.vx = -stella_calda.vx
+            if stella_calda.right > WIDTH:
+                stella_calda.vx = -stella_calda.vx
+            if stella_calda.top < 0:
+                stella_calda.vy = -stella_calda.vy
+            if stella_calda.bottom > HEIGHT:
+                stella_calda.vy = -stella_calda.vy
 
-def mutate_star():
-    global happy_star_list, hot_star_list
-    if not razzo.hit and happy_star_list:
-        rand_star = randint(0, len(happy_star_list)-1)
-        hot_star_pos_x = happy_star_list[rand_star].x 
-        hot_star_pos_y = happy_star_list[rand_star].y 
+def muta_stella():
+    global lista_stelle_felici, lista_stelle_calde
+    if not razzo.colpito and lista_stelle_felici:
+        stella_casuale = randint(0, len(lista_stelle_felici)-1)
+        stella_calda_pos_x = lista_stelle_felici[stella_casuale].x 
+        stella_calda_pos_y = lista_stelle_felici[stella_casuale].y 
 
-        del happy_star_list[rand_star]
+        del lista_stelle_felici[stella_casuale]
 
-        hot_star = Actor("hot-star")
-        hot_star.pos = hot_star_pos_x, hot_star_pos_y
-        hot_star.vx = star_velocity()
-        hot_star.vy = star_velocity()
-        hot_star_list.append(hot_star)
+        stella_calda = Actor("stella-calda")
+        stella_calda.pos = stella_calda_pos_x, stella_calda_pos_y
+        stella_calda.vx = velocita_stella()
+        stella_calda.vy = velocita_stella()
+        lista_stelle_calde.append(stella_calda)
 
-def star_velocity():
-    random_dir = randint(0,1)
-    random_velocity = randint(1,2)
-    if random_dir is 0:
-        return -random_velocity
+def velocita_stella():
+    direz_casuale = randint(0,1)
+    veloc_casuale = randint(1,2)
+    if direz_casuale == 0:
+        return -veloc_casuale
     else:
-        return random_velocity
+        return veloc_casuale
 
-def check_happy_star_collision():
-    global score, happy_star_list
-    if not razzo.hit:
-        for index in range(0, len(happy_star_list)-1):
-            if happy_star_list[index].colliderect(razzo):
-                score += 1
+def controlla_collisione_stella_felice():
+    global punteggio, lista_stelle_felici
+    if not razzo.colpito:
+        for index in range(0, len(lista_stelle_felici)-1):
+            if lista_stelle_felici[index].colliderect(razzo):
+                punteggio += 1
                 sounds.eep.play()
-                del happy_star_list[index]
+                del lista_stelle_felici[index]
 
-def check_hot_star_collision():
-    global hot_star_list
-    if not razzo.hit:
-        for index in range(0, len(hot_star_list)-1):
-            distance = razzo.distance_to(hot_star_list[index])
-            if not razzo.hit and distance < DISTANZA_DI_COLLISIONE:
-                razzo.lives -= 1
-                del hot_star_list[index]
-                razzo.hit = True
+def controlla_collisione_stella_calda():
+    global lista_stelle_calde
+    if not razzo.colpito:
+        for index in range(0, len(lista_stelle_calde)-1):
+            distanza = razzo.distanza_to(lista_stelle_calde[index])
+            if not razzo.colpito and distanza < DISTANZA_DI_COLLISIONE:
+                razzo.vite -= 1
+                del lista_stelle_calde[index]
+                razzo.colpito = True
 
-def rocket_explode():
-    if razzo.hit:
-        if razzo.state is 0:
+def razzo_esplode():
+    if razzo.colpito:
+        if razzo.stato == 0:
             sounds.explosion.play()
         
-        if razzo.state < 90:
-            razzo.state += 1
-            razzo.image = razzo.images[math.floor(razzo.state/30)]
+        if razzo.stato < 90:
+            razzo.stato += 1
+            razzo.image = razzo.img_esplosione[math.floor(razzo.stato/30)]
 
-def init_game():
-    global happy_star_list, hot_star_list
-    happy_star_list = []
-    hot_star_list = []
+def inizia_gioco():
+    global lista_stelle_felici, lista_stelle_calde
+    lista_stelle_felici = []
+    lista_stelle_calde = []
     razzo.image = "razzo"
     razzo.pos = CENTRO
-    razzo.state = 0
-    razzo.hit = False
+    razzo.stato = 0
+    razzo.colpito = False
 
 
-clock.schedule_interval(add_star, 2)
-clock.schedule_interval(mutate_star, 5)
+clock.schedule_interval(aggiungi_stella, 2)
+clock.schedule_interval(muta_stella, 5)
 pgzrun.go()
