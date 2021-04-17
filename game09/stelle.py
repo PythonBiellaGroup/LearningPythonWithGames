@@ -4,7 +4,7 @@ import math
 
 WIDTH = 1000
 HEIGHT = 700
-TITLE = "Stelle"
+TITLE = "Collezionista di stelle"
 CENTRO_X = WIDTH/2
 CENTRO_Y = HEIGHT/2
 CENTRO = (CENTRO_X, CENTRO_Y)

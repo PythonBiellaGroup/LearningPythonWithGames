@@ -8,6 +8,8 @@ Learn to develop with python by building video games with Pygame Zero
 
 https://pygame-zero.readthedocs.io/en/stable/principles.html
 
+https://electronstudio.github.io/pygame-zero-book/
+
 https://github.com/lordmauve/pgzero/tree/master/examples
 
 https://github.com/Wireframe-Magazine/Code-the-Classics

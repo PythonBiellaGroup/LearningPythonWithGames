@@ -8,4 +8,4 @@ Cosa cresce piu' velocemente?|Capelli|Unghie|Pelle|Sopracciglia|1
 Qual e' la cima piu' alta del mondo?|Kilimanjaro|Denali|Fuji|Everest|4
 Quale pianeta e' noto con il nome "pianeta rosso"?|Venere|Marte|Terra|Giove|2
 Quale parte del corpo continua a crescere per tutta la vita?|Cervello|Denti|Naso|Occhi|3
-Quale elemento fu inventato da Thomas Edision?|Frullatore|Lampadina|Asciugacapelli|Ventilatore|2 
+Quale elemento fu inventato da Thomas Edision?|Frullatore|Lampadina|Asciugacapelli|Ventilatore|2
