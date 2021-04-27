@@ -12,6 +12,8 @@ https://electronstudio.github.io/pygame-zero-book/
 
 https://github.com/lordmauve/pgzero/tree/master/examples
 
+https://github.com/rbricheno/pygamezero-workshop
+
 https://github.com/Wireframe-Magazine/Code-the-Classics
 
 https://github.com/TechnoVisual/Pygame-Zero/
