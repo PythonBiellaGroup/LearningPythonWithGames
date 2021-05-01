@@ -1,10 +1,15 @@
-# LearningPythonWithGames
-Learn to develop with python by building video games with Pygame Zero
+# Imparare Python programmando giochi
+Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.
+Le risorse principali sono in lingua italiana.
 
-# Format
-4 Lessons - Around 2h each lesson
+# Programma
+4 sessioni di circa 2h:
+1 - Introduzione al corso, a Python, basi
+2 - Introduzione a PyGame Zero e primi giochi
+3 - Tris di giochi a difficoltà crescente
+4 - Altro tris di giochi a difficoltà crescente
 
-# References
+# Riferimenti
 
 https://pygame-zero.readthedocs.io/en/stable/principles.html
 
@@ -22,7 +27,9 @@ https://blog.withcode.uk/2019/05/create-games-with-python-online-pygamezero-simu
 
 https://github.com/markmillr/pgzero-teaching-resources/blob/master/pygame-zero-cheatsheet-pintman-en.pdf
 
-# Examples
+# Esempi
+
+https://github.com/rajasekaranap/pygamezero-examples
 
 https://github.com/lordmauve/pgzero/tree/master/examples
 
@@ -34,10 +41,17 @@ https://github.com/Belgin-Android/PgZero_Game
 
 https://github.com/codecoach-joshua/PGZProjects
 
-# Addional functions on PGZ
+https://github.com/kantel/pygamezero
+
+https://github.com/ScienceOxford/mediaeval_pygamezero
+
+https://github.com/ericclack
+Not complete games but for each docs as tutorial
+
+# Libreria con funzioni aggiuntive per PGZ
 
 https://www.aposteriori.com.sg/pygame-zero-helper/
-# Runtime online
+# Ambienti runtime dove provare online
 
 https://create.withcode.uk/
 

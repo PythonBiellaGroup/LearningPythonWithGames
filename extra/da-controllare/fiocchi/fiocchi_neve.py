@@ -12,7 +12,7 @@ NUMBER_OF_SNOWFLAKES = 20
 
 snowflakes = []
 for i in range(NUMBER_OF_SNOWFLAKES):
-  s = Actor('snowflake', (random.randint(0, WIDTH), random.randint(0, HEIGHT)))
+  s = Actor('fiocco', (random.randint(0, WIDTH), random.randint(0, HEIGHT)))
   snowflakes.append(s)
 
 def draw():
@@ -45,7 +45,7 @@ pgzrun.go()
 # Esempio di assets.json
 # {
 #   "images": {
-#     "ficco": {
+#     "fiocco": {
 #       "src": "https://raw.githubusercontent.com/PythonBiellaGroup/LearningPythonWithGames/main/01/images/snowflake.png"
 #     }
 #   }
