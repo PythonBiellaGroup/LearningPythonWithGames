@@ -1,12 +1,17 @@
 # Imparare Python programmando giochi
 Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.
+
 Le risorse principali sono in lingua italiana.
 
 # Programma
 4 sessioni di circa 2h:
+
 1 - Introduzione al corso, a Python, basi
+
 2 - Introduzione a PyGame Zero e primi giochi
+
 3 - Tris di giochi a difficoltà crescente
+
 4 - Altro tris di giochi a difficoltà crescente
 
 # Riferimenti
