@@ -16,6 +16,10 @@ def draw():
     screen.draw.text(messaggio, center=(400,40), fontsize=60)
 
 def piazza_alieno():
+    '''
+    Il limite di 50 pixel è definito per evitare che l'immagine 
+    sia parzialmente fuori schermo
+    '''
     alieno.x = randint(50, WIDTH-50)
     alieno.y = randint(50, HEIGHT-50)
 

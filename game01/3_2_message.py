@@ -10,8 +10,6 @@ HEIGHT = 600
 alieno = Actor("alieno")
 messaggio = ""
 
-#alieno.pos = 50,50
-
 def draw():
     screen.clear()
     screen.fill(color=(128,0,0))

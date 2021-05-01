@@ -12,7 +12,6 @@ ape = Actor("ape")
 ape.pos = 100,100
 
 fiore = Actor("fiore")
-fiore.pos = 200,200
 
 def draw():
     screen.blit("sfondo", (0,0))
@@ -34,6 +33,9 @@ def tempo_scaduto():
     game_over = True
 
 def update():
+    '''
+    Funzione speciale PGZ
+    '''
     global punteggio
 
     if keyboard.left:
@@ -52,5 +54,6 @@ def update():
         piazza_fiore()
 
 
+piazza_fiore()
 clock.schedule(tempo_scaduto, 10.0)
 pgzrun.go()

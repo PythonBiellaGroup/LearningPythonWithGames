@@ -18,7 +18,7 @@ def draw():
 
 def piazza_alieno():
     '''
-    Il limite di 50 pixel è definito per evitare che l'immagina 
+    Il limite di 50 pixel è definito per evitare che l'immagine 
     sia parzialmente fuori schermo
     '''
     alieno.x = randint(50, WIDTH-50)
