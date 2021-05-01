@@ -6,13 +6,10 @@ Le risorse principali sono in lingua italiana.
 # Programma
 4 sessioni di circa 2h:
 
-1 - Introduzione al corso, a Python, basi
-
-2 - Introduzione a PyGame Zero e primi giochi
-
-3 - Tris di giochi a difficoltà crescente
-
-4 - Altro tris di giochi a difficoltà crescente
+1 - Introduzione al corso, a Python, basi  
+2 - Introduzione a PyGame Zero e primi giochi  
+3 - Tris di giochi a difficoltà crescente  
+4 - Altro tris di giochi a difficoltà crescente  
 
 # Riferimenti
 
@@ -32,7 +29,7 @@ https://blog.withcode.uk/2019/05/create-games-with-python-online-pygamezero-simu
 
 https://github.com/markmillr/pgzero-teaching-resources/blob/master/pygame-zero-cheatsheet-pintman-en.pdf
 
-# Esempi
+# Altri esempi (tutti in inglese)
 
 https://github.com/rajasekaranap/pygamezero-examples
 
@@ -51,7 +48,7 @@ https://github.com/kantel/pygamezero
 https://github.com/ScienceOxford/mediaeval_pygamezero
 
 https://github.com/ericclack
-Not complete games but for each docs as tutorial
+Giochi non completi ma accompagnati da tutorial
 
 # Libreria con funzioni aggiuntive per PGZ
 
