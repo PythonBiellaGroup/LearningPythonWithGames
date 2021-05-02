@@ -1,7 +1,7 @@
 import pgzrun
 from random import randint
 
-TITLE = "Connetti i satelliti"
+TITLE = "🐍🐍 Connetti i satelliti 🐍🐍"
 WIDTH = 800
 HEIGHT = 600
 
@@ -11,7 +11,7 @@ linee = []
 NUM_SATELLITI = 8
 
 def crea_satelliti():
-    global tempo_iniziale 
+    global tempo_iniziale
     for count in range(0, NUM_SATELLITI):
         satellite = Actor("satellite")
         satellite.pos = randint(40, WIDTH-40), randint(40, HEIGHT-40)

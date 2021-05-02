@@ -14,7 +14,7 @@ mostra_lista = []
 
 punteggio = 0
 mossa_corrente = 0
-contatore = 4
+cnt_alla_rovescia = 4
 durata_combattimento = 4
 
 combatti = False
@@ -27,7 +27,7 @@ turni = 0
 # Karate Kid
 karate_kid = Actor("karate-start")
 karate_kid.pos = CENTER_X, CENTER_Y + 100
-# Frecce per le mosse
+# Anche le frecce per le mosse sono Actors
 su = Actor("su")
 su.pos = CENTER_X, CENTER_Y - 230
 destra = Actor("destra")
@@ -38,9 +38,12 @@ sinistra = Actor("sinistra")
 sinistra.pos = CENTER_X - 60, CENTER_Y - 170
 
 def draw():
-    global game_over, punteggio, combatti, contatore, mostra_contoallarovescia, inizio_gioco
+    '''
+    Draw PGZ: gli oggetti di gioco
+    '''
+    global game_over, punteggio, combatti, cnt_alla_rovescia, mostra_contoallarovescia, inizio_gioco
     screen.clear()
-    screen.blit("stage", (0,0))
+    screen.blit("sfondo", (0,0))
     karate_kid.draw()
     su.draw()
     giu.draw()
@@ -59,7 +62,7 @@ def draw():
         )
     if mostra_contoallarovescia:
         screen.draw.text(
-            str(contatore), color = "white",
+            str(cnt_alla_rovescia), color = "white",
             topleft = (CENTER_X - 8, CENTER_Y + 200),
             fontsize = 60
         )
@@ -79,6 +82,9 @@ def draw():
         )
 
 def update():
+    '''
+    Update PGZ: aggiornamento degli oggetti di gioco
+    '''
     global game_over, mossa_corrente, mosse_completate, inizio_gioco
     if not game_over:
         if mosse_completate:
@@ -92,6 +98,9 @@ def update():
         reset_game()
 
 def reset_game():
+    '''
+    Reset di tutte le variabili per (ri)partire
+    '''
     global game_over, inizio_gioco, punteggio, durata_combattimento, mossa_corrente
     global lista_mosse, mostra_lista, turni
     game_over = False
@@ -107,6 +116,9 @@ def reset_game():
     genera_mosse()
 
 def risistema_karate_kid():
+    '''
+    Reset degli actor
+    '''
     global game_over
     if not game_over:
         karate_kid.image = "karate-start"
@@ -116,6 +128,9 @@ def risistema_karate_kid():
         giu.image = "giu"
 
 def aggiorna_karate_kid(mossa):
+    '''
+    Per ogni mossa, aggiornamento immagine karateca e freccia relativa
+    '''
     global game_over
     if not game_over:
         if mossa == 0:
@@ -137,16 +152,21 @@ def aggiorna_karate_kid(mossa):
         sounds.shout.play()
 
 def genera_mosse():
-    global lista_mosse, durata_combattimento, contatore, mostra_contoallarovescia, combatti, turni
+    '''
+    Genera la sequenza di mosse e mostra il conto alla rovescia
+    '''
+    global lista_mosse, durata_combattimento, cnt_alla_rovescia, mostra_contoallarovescia, combatti, turni
  
-    contatore = 4
+    cnt_alla_rovescia = 4
     lista_mosse = []
     combatti = False
 
     turni += 1
+    # Ogni tre turni aumenta la difficoltà aggiungendo una mossa in più
     if turni % 3 == 0:
         durata_combattimento += 1
 
+    # Crea la sequenza delle mosse
     for mossa in range(0, durata_combattimento):
         mossa_casuale = randint(0,3)
         lista_mosse.append(mossa_casuale)
@@ -156,6 +176,9 @@ def genera_mosse():
     contoallarovescia()
 
 def mostra_mosse():
+    '''
+    Mostra la sequenza di mosse
+    '''
     global lista_mosse, mostra_lista, durata_combattimento
     global combatti, mostra_contoallarovescia, mossa_corrente
 
@@ -164,33 +187,28 @@ def mostra_mosse():
         mostra_lista = mostra_lista[1:]
 
         aggiorna_karate_kid(questa_mossa)
+        # Visualizza la mossa per un secondo
         clock.schedule(mostra_mosse, 1)
-        # if questa_mossa == 0:
-        #     aggiorna_karate_kid(0)
-        #     clock.schedule(mostra_mosse, 1)
-        # elif questa_mossa == 1:
-        #     aggiorna_karate_kid(1)
-        #     clock.schedule(mostra_mosse, 1)
-        # elif questa_mossa == 2:
-        #     aggiorna_karate_kid(2)
-        #     clock.schedule(mostra_mosse, 1)
-        # else:
-        #     aggiorna_karate_kid(3)
-        #     clock.schedule(mostra_mosse, 1)
     else:
         combatti = True
         mostra_contoallarovescia = False
 
 def contoallarovescia():
-    global contatore, game_over, mostra_contoallarovescia
-    if contatore > 1:
-        contatore -= 1
+    '''
+    Mostra la sequenza di mosse
+    '''
+    global cnt_alla_rovescia, game_over, mostra_contoallarovescia
+    if cnt_alla_rovescia > 1:
+        cnt_alla_rovescia -= 1
         clock.schedule(contoallarovescia, 1)
     else:
         mostra_contoallarovescia = False
         mostra_mosse()
 
 def prossima_mossa():
+    '''
+    Aggiorna la prossima mossa e verifica se la sequenza è completa
+    '''
     global durata_combattimento, mossa_corrente, mosse_completate
     if mossa_corrente < durata_combattimento - 1:
         mossa_corrente += 1
@@ -198,6 +216,9 @@ def prossima_mossa():
         mosse_completate = True
 
 def on_key_down(key):
+    '''
+    Gestione input da tastiera e verifica correttezza mosse
+    '''
     global punteggio, game_over, lista_mosse, mossa_corrente
     if key == keys.UP:
         aggiorna_karate_kid(0)

@@ -138,7 +138,7 @@ def on_key_down():
     inzio_gioco = True
 
     if not uccello.morto:
-        uccello.vy = -FORZA_BATTITO_ALI
+        uccello.vy =- FORZA_BATTITO_ALI
 
 def update():
     if inzio_gioco:

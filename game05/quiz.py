@@ -66,6 +66,8 @@ def draw():
         color="white", shadow=(0.5,0.5),
         scolor="dim grey"
     )
+    # domanda[0] contiene la domanda
+    # domanda[1..] contiene le risposte
     indice = 1
     for risposta_box in risposte:
         screen.draw.textbox(domanda[indice].strip(), risposta_box, color="black")
