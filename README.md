@@ -1,10 +1,9 @@
 # Imparare Python programmando giochi
-Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.
-
+Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.  
 Le risorse principali sono in lingua italiana.
 
 # Programma
-4 sessioni di circa 2h:
+Quattro sessioni di circa 2h:
 
 1 - Introduzione al corso, a Python, basi  
 2 - Introduzione a PyGame Zero e primi giochi  
@@ -47,7 +46,7 @@ https://github.com/kantel/pygamezero
 
 https://github.com/ScienceOxford/mediaeval_pygamezero
 
-https://github.com/ericclack
+https://github.com/ericclack  
 Giochi non completi ma accompagnati da tutorial
 
 # Libreria con funzioni aggiuntive per PGZ

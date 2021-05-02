@@ -133,7 +133,7 @@ def giocatore_colpisce(laser):
             sounds.eep.play()
             laser.status = 1
             alieno.status = 1
-            punteggio += 1000
+            punteggio += 100
 
 
 def alieno_colpisce(laser):

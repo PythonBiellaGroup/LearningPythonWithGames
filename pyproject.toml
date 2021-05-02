@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "LearningPythonWithGames"
+version = "0.1.0"
+description = "Imparare Python programmando giochi"
+authors = [
+    "Burlesco70"
+]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/PythonBiellaGroup/LearningPythonWithGames"
+repository = "https://github.com/PythonBiellaGroup/LearningPythonWithGames"
+documentation = "https://github.com/PythonBiellaGroup/LearningPythonWithGames"
+
+classifiers = [
+    "Topic :: Learn Python"
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pgzero = "^1.2"
