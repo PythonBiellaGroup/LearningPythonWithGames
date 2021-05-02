@@ -8,11 +8,11 @@ HEIGHT = 600
 satelliti = []
 linee = []
 
-numero_satelliti = 8
+NUM_SATELLITI = 8
 
 def crea_satelliti():
     global tempo_iniziale 
-    for count in range(0, numero_satelliti):
+    for count in range(0, NUM_SATELLITI):
         satellite = Actor("satellite")
         satellite.pos = randint(40, WIDTH-40), randint(40, HEIGHT-40)
         satelliti.append(satellite)

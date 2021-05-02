@@ -2,7 +2,7 @@ import pgzrun
 from random import randint
 from time import time
 
-TITLE = "Connetti i satelliti"
+TITLE = "🐍🐍 Connetti i satelliti 🐍🐍"
 WIDTH = 800
 HEIGHT = 600
 
@@ -15,11 +15,11 @@ tempo_iniziale = 0
 tempo_totale = 0
 tempo_finale = 0
 
-numero_satelliti = 8
+NUM_SATELLITI = 8
 
 def crea_satelliti():
     global tempo_iniziale
-    for count in range(0, numero_satelliti):
+    for count in range(0, NUM_SATELLITI):
         satellite = Actor("satellite")
         satellite.pos = randint(40, WIDTH-40), randint(40, HEIGHT-40)
         satelliti.append(satellite)
@@ -41,7 +41,7 @@ def draw():
         screen.draw.line(line[0], line[1], (255,255,255))
 
     # Mostra 
-    if indice_prossimo_satellite < numero_satelliti:
+    if indice_prossimo_satellite < NUM_SATELLITI:
         tempo_totale = time() - tempo_iniziale
         # Senza round l'intervallo di tempo ha molti decimali!
         screen.draw.text(str(round(tempo_totale,2)), (10,10), fontsize=30)
@@ -54,7 +54,7 @@ def draw():
 def on_mouse_down(pos):
     global indice_prossimo_satellite, linee
 
-    if indice_prossimo_satellite < numero_satelliti:
+    if indice_prossimo_satellite < NUM_SATELLITI:
         if satelliti[indice_prossimo_satellite].collidepoint(pos):
             if indice_prossimo_satellite:
                 linee.append((satelliti[indice_prossimo_satellite-1].pos, satelliti[indice_prossimo_satellite].pos))
