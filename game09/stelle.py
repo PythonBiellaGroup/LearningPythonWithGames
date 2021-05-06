@@ -150,7 +150,7 @@ def controlla_collisione_stella_calda():
     global lista_stelle_calde
     if not razzo.colpito:
         for index in range(0, len(lista_stelle_calde)-1):
-            distanza = razzo.distanza_to(lista_stelle_calde[index])
+            distanza = razzo.distance_to(lista_stelle_calde[index])
             if not razzo.colpito and distanza < DISTANZA_DI_COLLISIONE:
                 razzo.vite -= 1
                 del lista_stelle_calde[index]
