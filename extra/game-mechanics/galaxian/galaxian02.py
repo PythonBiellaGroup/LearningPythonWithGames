@@ -80,7 +80,7 @@ def ship_controller_dive(ship, dt):
 EPSILON = 0.001
 
 # Create an Actor using the 'ship' sprite
-ship = Actor('ship', pos=(100, 100), angle=90)
+ship = Actor('ship02', pos=(100, 100), angle=90)
 ship.angle = 90  # Face upwards
 ship.controller_function = ship_controller_pan
 ship.vx = 100
