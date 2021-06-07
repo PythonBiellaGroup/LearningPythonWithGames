@@ -19,6 +19,7 @@ def piazza_alieno():
     '''
     Il limite di 50 pixel è definito per evitare che l'immagina 
     sia parzialmente fuori schermo
+    Alieno ha size 64x64
     '''
     alieno.x = randint(50, WIDTH-50)
     alieno.y = randint(50, HEIGHT-50)
