@@ -28,11 +28,14 @@ https://blog.withcode.uk/2019/05/create-games-with-python-online-pygamezero-simu
 
 https://github.com/markmillr/pgzero-teaching-resources/blob/master/pygame-zero-cheatsheet-pintman-en.pdf
 
-# Altri esempi (tutti in inglese)
+https://www.mattlayman.com/blog/2019/teach-kid-code-pygame-zero/
+
+# Altri esempi (tutti in inglese)   
+
+Esempi ufficiali della repo   
+https://github.com/lordmauve/pgzero/tree/master/examples
 
 https://github.com/rajasekaranap/pygamezero-examples
-
-https://github.com/lordmauve/pgzero/tree/master/examples
 
 https://github.com/Wireframe-Magazine/Code-the-Classics
 
