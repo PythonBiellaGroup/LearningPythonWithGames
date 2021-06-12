@@ -4,7 +4,9 @@ WIDTH = 400
 HEIGHT = 400
 TITLE = "🐍🐍 Ciao Alieno 🐍🐍"
 
+# https://pygame-zero.readthedocs.io/en/stable/builtins.html#actors
 alieno = Actor("alieno")
+# pos riferisce al centro dell'immagine
 alieno.pos = (200, 250)
 
 def draw():

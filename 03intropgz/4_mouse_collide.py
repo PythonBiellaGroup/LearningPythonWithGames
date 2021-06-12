@@ -28,6 +28,7 @@ def set_alieno_ferito():
     global hit
     alieno.image = "alieno_ferito"
     hit = True
+    # https://pygame-zero.readthedocs.io/en/stable/builtins.html#clock
     clock.schedule_unique(set_alieno_normale, 1.0)
 
 def set_alieno_normale():

@@ -5,6 +5,8 @@ WIDTH = 800
 HEIGHT = 600
 
 alieno = Actor("alieno")
+# pos è la posizione del centro
+# alieno.pos = 0,0
 alieno.pos = 50,50
 
 def draw():
