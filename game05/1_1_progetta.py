@@ -4,7 +4,7 @@ TITLE = "Quiz"
 WIDTH = 870
 HEIGHT = 650
 
-# Disegna componenti della GUI progettata
+# Assegna le dimensioni dei componenti della GUI progettata
 scorrevole_box = Rect(0,0,880,80)
 domanda_box = Rect(0,0,650,150)
 timer_box = Rect(0,0,150,150)

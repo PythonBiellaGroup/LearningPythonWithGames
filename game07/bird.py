@@ -6,25 +6,35 @@ WIDTH = 800
 HEIGHT = 700
 
 # Parametri di gioco, trova quelli più giocabili
-GAP = 130 # change to 100 instead of 130
-FORZA_BATTITO_ALI = 5
-VELOCITA = 3  # change to 4 instead of 2
-GRAVITA = 0.5  # change to 0.5 instead of 0.3
-DIST_TUBO = 600
+# GAP è la distanza tra il tubo sopra e quello sotto
+GAP = 150 # prova a cambiarla
+# FORZA_BATTITO_ALI quando fa salire il battito d'ali
+FORZA_BATTITO_ALI = 5 # prova a cambiarla
+# VELOCITA è quando scorre il gioco
+VELOCITA = 2  # prova a cambiarla
+# GRAVITA usata per simulare la caduta per gravità, in percentule
+GRAVITA = 0.3  # prova a cambiarla
+# DIST_TUBO usata per definire la distanza tra i tubi consecutivi
+DIST_TUBO = 600 # prova a cambiarla
 
 uccello = Actor("uccello0", (80,300))
 # Diamo degli attributi ad Actor
 uccello.morto = False
 uccello.colpito = False
 uccello.punteggio = 0
+# Velocità verticale
 uccello.vy = 0
 
+# Actors have an “anchor position”, which is a convenient way to position the actor in the scene. 
+# By default, the anchor position is the center, so the .pos attribute refers to the center of the actor
+# (and so do the x and y coordinates)
 tubo_top1 = Actor("sopra", anchor=("left", "bottom"))
 tubo_bottom1 = Actor("sotto", anchor=("left", "top"))
 
 tubo_top2 = Actor("sopra", anchor=("left", "bottom"))
 tubo_bottom2 = Actor("sotto", anchor=("left", "top"))
 
+# Salviamo il punteggio più alto in un dizionario
 dizionario = {"highscore":0}
 inzio_gioco = False
 
@@ -53,13 +63,17 @@ def draw():
         shadow = (1,1)
     )
     if not inzio_gioco:
+        # Scritta gialla con bordo nero
         screen.draw.text(
             "Premi un tasto qualsiasi", color = "yellow",
             center = (WIDTH/2, HEIGHT/2),
             fontsize = 60, owidth = 0.5, ocolor = "black"
         )
 
-def set_tubo():
+def set_tubi():
+    '''
+    Funzione che piazza due tubi per volta
+    '''
     tubo_gap_y1 = randint(200, HEIGHT-200)
     tubo_top1.pos = (WIDTH/2, tubo_gap_y1 - GAP/2)
     tubo_bottom1.pos = (WIDTH/2, tubo_gap_y1 + GAP/2)
@@ -68,7 +82,10 @@ def set_tubo():
     tubo_top2.pos = (WIDTH/2 + DIST_TUBO, tubo_gap_y2 - GAP/2)
     tubo_bottom2.pos = (WIDTH/2 + DIST_TUBO, tubo_gap_y2 + GAP/2)
 
-def reset_tubo():
+def reset_tubi():
+    '''
+    Funzione che rimette i tubi quando spariscono
+    '''
     if tubo_top1.right < 0:
         tubo_gap_y1 = randint(200, HEIGHT-200)
         tubo_top1.pos = (WIDTH, tubo_gap_y1 - GAP/2)
@@ -80,18 +97,20 @@ def reset_tubo():
         tubo_bottom2.pos = (WIDTH, tubo_gap_y2 + GAP/2)
 
 
-def update_tubo():
+def update_tubi():
     global dizionario
     tubo_top1.left -= VELOCITA
     tubo_bottom1.left -= VELOCITA
     tubo_top2.left -= VELOCITA
     tubo_bottom2.left -= VELOCITA
 
+    # Ogni volta che il tubo "scorre" aggiorno il punteggio
     if tubo_top1.right < 0 or tubo_top2.right < 0:
         if not uccello.morto:
             uccello.punteggio += 1
-        reset_tubo()
+        reset_tubi()
     
+    # Se serve aggiorno il record
     if uccello.punteggio > dizionario["highscore"]:
         dizionario["highscore"] = uccello.punteggio
 
@@ -125,7 +144,7 @@ def update_uccello():
         uccello.colpito = False
         uccello.punteggio = 0
         uccello.vy = 0
-        set_tubo()
+        set_tubi()
         inzio_gioco = False
     
 
@@ -142,9 +161,9 @@ def on_key_down():
 
 def update():
     if inzio_gioco:
-        update_tubo()
+        update_tubi()
         update_uccello()
 
-set_tubo()
+set_tubi()
 music.play("electroman")
 pgzrun.go()

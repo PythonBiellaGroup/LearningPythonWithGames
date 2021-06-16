@@ -39,28 +39,27 @@ salta_box.move_ip(700,270)
 def draw():
     global msg_scorrevole
     screen.clear()
-    screen.fill(color="black")
-    screen.draw.filled_rect(scorrevole_box, "black")
-    screen.draw.filled_rect(domanda_box, "navy blue")
-    screen.draw.filled_rect(timer_box, "navy blue")
-    screen.draw.filled_rect(salta_box, "dark green")
-
-    for risposta_box in risposte:
-        screen.draw.filled_rect(risposta_box, "dark orange")
+    screen.fill(color="black")  
     
+    screen.draw.filled_rect(scorrevole_box, "black")
     msg_scorrevole = "Quiz ..."
     msg_scorrevole = msg_scorrevole + f"Domanda: {indice_domande} di {contatore_domande}"
-
     screen.draw.textbox(msg_scorrevole, scorrevole_box, color="white")
+
+    screen.draw.filled_rect(timer_box, "navy blue")
     screen.draw.textbox(
         str(secondi_mancanti),timer_box,
         color="white", shadow=(0.5, 0.5),
         scolor="dim grey"
     )
+    
+    screen.draw.filled_rect(salta_box, "dark green")
     screen.draw.textbox(
         "Salta", salta_box,
         color="black", angle=-90
     )
+    
+    screen.draw.filled_rect(domanda_box, "navy blue")
     screen.draw.textbox(
         domanda[0].strip(), domanda_box,
         color="white", shadow=(0.5,0.5),
@@ -70,6 +69,7 @@ def draw():
     # domanda[1..] contiene le risposte
     indice = 1
     for risposta_box in risposte:
+        screen.draw.filled_rect(risposta_box, "dark orange")
         screen.draw.textbox(domanda[indice].strip(), risposta_box, color="black")
         indice = indice + 1
 
@@ -95,11 +95,16 @@ def leggi_domande_da_file():
     Lettura delle domande dal file .txt
     '''
     global contatore_domande, domande
+    ''' Gestione file "vecchia"
     q_file=open(nome_file_domande, "r")
     for domanda in q_file:
         domande.append(domanda)
         contatore_domande = contatore_domande + 1
     q_file.close()
+    '''
+    with open(nome_file_domande) as q_file:
+        domande = q_file.readlines()
+    contatore_domande = len(domande)
 
 
 def leggi_prossima_domanda():
@@ -180,5 +185,4 @@ def update_secondi_mancanti():
 leggi_domande_da_file()
 domanda = leggi_prossima_domanda()
 clock.schedule_interval(update_secondi_mancanti, 1)
-
 pgzrun.go()
