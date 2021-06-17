@@ -72,7 +72,7 @@ def draw():
 
 def set_tubi():
     '''
-    Funzione che piazza due tubi per volta
+    Funzione che piazza i primi due tubi per volta
     '''
     tubo_gap_y1 = randint(200, HEIGHT-200)
     tubo_top1.pos = (WIDTH/2, tubo_gap_y1 - GAP/2)
@@ -99,6 +99,7 @@ def reset_tubi():
 
 def update_tubi():
     global dizionario
+    # I tubi scorrono...
     tubo_top1.left -= VELOCITA
     tubo_bottom1.left -= VELOCITA
     tubo_top2.left -= VELOCITA
@@ -116,21 +117,25 @@ def update_tubi():
 
 
 def update_uccello():
+    # L'uccello si muove solo verticalmente
     global inzio_gioco
     uy = uccello.vy
     uccello.vy += GRAVITA
     uccello.y += (uy + uccello.vy)/2
     uccello.x = 80
 
+    # Simulazione del battito d'ali
     if not uccello.morto:
         if uccello.vy < -3:
             uccello.image = "uccello2"
         else:
             uccello.image = "uccello1"
 
+    # Gestione collisione
     if uccello.colliderect(tubo_top1) or uccello.colliderect(tubo_bottom1) or \
         uccello.colliderect(tubo_top2) or uccello.colliderect(tubo_bottom2):
         uccello.morto = True
+        # Per gestire la transizione/animazione tra colpito e morto
         if uccello.morto and not uccello.colpito:
             sounds.bang.play()
             uccello.image = "uccellocolpito"
