@@ -10,7 +10,10 @@ CENTRO_Y = HEIGHT / 2
 
 alieni = []
 lasers = []
+# Usata per gestire le mosse degli alieni
 sequenza_mosse = 0
+# contatore_mosse e ritardo_mossa usati per ritardare il movimento
+# altrimenti il cambio immagine degli alieni sarebbe troppo veloce
 contatore_mosse = 0
 ritardo_mossa = 30
 punteggio = 0
@@ -21,6 +24,7 @@ giocatore.vite = 3
 
 def draw():
     screen.blit("sfondo", (0,0))
+    # math.floor arrotonda all'intero più vicino
     giocatore.image = giocatore.images[math.floor(giocatore.status/6)]
     giocatore.draw()
     mostra_alieni()
@@ -40,6 +44,10 @@ def draw():
 
             
 def testo_centrale(message):
+    '''
+    Funzione con testo parametrico per visualizzazione
+    messaggio centro schermo
+    '''
     screen.draw.text(
         message, center = (CENTRO_X,CENTRO_Y),
         owidth = 0.5, ocolor = (255,255,255), color = (255,64,0),
@@ -48,6 +56,9 @@ def testo_centrale(message):
 
 
 def mostra_vite():
+    '''
+    Mostra le vite posizionando una piccola astronave per ognuna
+    '''
     for lv in range(giocatore.vite):
         screen.blit("vita", (10 + (lv*32), 10))
 
@@ -58,9 +69,12 @@ def update():
         controlla_tasti()
         aggiorna_lasers()
         contatore_mosse += 1
+        # Aggiunto ritardo nell'aggiornamento
         if contatore_mosse == ritardo_mossa:
             aggiorna_alieni()
             contatore_mosse = 0
+        # Se il giocatore è colpito...
+        # Inizia l'animazione incrementando status fino a 30
         if giocatore.status > 0:
             giocatore.status += 1
             if giocatore.status == 30:
@@ -78,6 +92,10 @@ def update():
                 init_game()
 
 def controlla_tasti():
+    '''
+    Gestisce il movimento dx-sx e lo sparo
+    mantenendo i margini (40 - 760)
+    '''
     global lasers
     if keyboard.left:
         if giocatore.x > 40: giocatore.x -= 5
@@ -89,6 +107,8 @@ def controlla_tasti():
             sounds.laser.play()
             clock.schedule(attiva_laser, 1.0)
             l = len(lasers)
+            # Il laser parte dalla posizione dell'astronave 
+            # (un po' più sù per la precisione)
             lasers.append(Actor("laser2",(giocatore.x, giocatore.y-32)))
             lasers[l].status = 0
             lasers[l].type = 1
@@ -106,12 +126,14 @@ def aggiorna_lasers():
     global lasers, alieni
     for laser in lasers:
         if laser.type == 0:
+            # Il laser degli alieni si muove dal'alto verso il basso
             alieno_colpisce(laser)
             laser.y += 2
             if laser.y > HEIGHT:
                 laser.status = 1
         if laser.type == 1:
             giocatore_colpisce(laser)
+            # Il laser del giocatore si muove dal basso verso l'alto
             laser.y -= 5
             if laser.y < 10:
                 laser.status = 1
@@ -121,6 +143,10 @@ def aggiorna_lasers():
 
 
 def pulizia_lista(l):
+    '''
+    Pulizia oggetti usando lo status
+    Ricreo una lista solo con quelli con status a 0
+    '''
     nuova_lista = []
     for i in range(len(l)):
         if l[i].status == 0: nuova_lista.append(l[i])
@@ -144,9 +170,14 @@ def alieno_colpisce(laser):
 
 
 def init_alieni():
+    '''
+    Creazione degli alieni:
+    - posizione, immagine, status
+    '''
     global alieni
     alieni = []
     for a in range(18):
+        # Tre file da 6
         alienoX = 210 + (a % 6) * 80
         alienoY = 100 + int(a/6) * 64
         alieni.append(Actor("alieno1", (alienoX, alienoY)))
@@ -154,6 +185,9 @@ def init_alieni():
 
 
 def mostra_alieni():
+    '''
+    Richiama la draw per tutti gli alieni
+    '''
     for alien in alieni:
         alien.draw()
 
@@ -161,10 +195,13 @@ def mostra_alieni():
 def aggiorna_alieni():
     global sequenza_mosse, lasers
     move_x = move_y = 0
+    # Movimento a sinistra
     if sequenza_mosse < 10 or sequenza_mosse > 30:
         move_x = -15
+    # Movimento in basso
     if sequenza_mosse == 10 or sequenza_mosse == 30:
         move_y = 50
+    # Movimento a destra
     if sequenza_mosse > 10 and sequenza_mosse < 30:
         move_x = 15
 
@@ -173,10 +210,12 @@ def aggiorna_alieni():
             alien, pos=(alien.x + move_x, alien.y + move_y),
             duration = 0.5, tween = "linear"
         )
+        # Immagine casuale tra le due disponibile, movimenta!
         if randint(0,1) == 0:
             alien.image = "alieno1"
         else:
             alien.image = "alieno1b"
+            # Spara laser 
             if randint(0, 10) == 0:
                 l = len(lasers)
                 lasers.append(Actor("laser1", midtop=alien.midbottom))
@@ -193,6 +232,9 @@ def init_game():
     giocatore.laser_attivo = 1
     giocatore.status = 0
     giocatore.pos = pos_iniziale_giocatore
+    # Lista di possibili immagini del giocatore
+    # indice 0 quando sta giocando
+    # indice da 1 a 5 quando esplode
     giocatore.images = ["giocatore","explosion1","explosion2","explosion3","explosion4","explosion5"]
     init_alieni()
     lasers = []
