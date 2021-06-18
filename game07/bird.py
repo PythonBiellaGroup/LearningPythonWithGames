@@ -142,6 +142,7 @@ def update_uccello():
             uccello.colpito = True
             clock.schedule(set_uccello_morto, 0.1)
 
+    # Gestione uscita dallo schermo
     if not 0 < uccello.y < 740:
         uccello.image = "uccello0"
         uccello.y = 200
@@ -160,7 +161,7 @@ def set_uccello_morto():
 def on_key_down():
     global inzio_gioco
     inzio_gioco = True
-
+    # Ricorda che le y diminuiscono verso l'alto, l'origine è in alto a sinistra
     if not uccello.morto:
         uccello.vy =- FORZA_BATTITO_ALI
 

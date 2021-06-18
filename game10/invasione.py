@@ -104,6 +104,7 @@ def controlla_tasti():
     if keyboard.space:
         if giocatore.laser_attivo == 1:
             giocatore.laser_attivo = 0
+            # https://pygame-zero.readthedocs.io/en/stable/builtins.html#sounds
             sounds.laser.play()
             clock.schedule(attiva_laser, 1.0)
             l = len(lasers)
@@ -137,7 +138,7 @@ def aggiorna_lasers():
             laser.y -= 5
             if laser.y < 10:
                 laser.status = 1
-
+    # Pulizia liste
     alieni = pulizia_lista(alieni)
     lasers = pulizia_lista(lasers)
 
@@ -153,9 +154,13 @@ def pulizia_lista(l):
     return nuova_lista
 
 def giocatore_colpisce(laser):
+    '''
+    Gestita la collisione, setto lo status del laser a 1 per la sua eliminazione
+    '''
     global punteggio
     for alieno in alieni:
         if alieno.collidepoint(laser.x, laser.y):
+            # https://pygame-zero.readthedocs.io/en/stable/builtins.html#sounds
             sounds.eep.play()
             laser.status = 1
             alieno.status = 1
@@ -163,9 +168,13 @@ def giocatore_colpisce(laser):
 
 
 def alieno_colpisce(laser):
+    '''
+    Gestita la collisione, setto lo status del laser a 1 per la sua eliminazione
+    '''
     if giocatore.collidepoint(laser.x, laser.y):
         giocatore.status = 1
         laser.status = 1
+        # https://pygame-zero.readthedocs.io/en/stable/builtins.html#sounds
         sounds.explosion.play()
 
 
@@ -178,6 +187,7 @@ def init_alieni():
     alieni = []
     for a in range(18):
         # Tre file da 6
+        # int(a/6) è il trucco per disporli su file
         alienoX = 210 + (a % 6) * 80
         alienoY = 100 + int(a/6) * 64
         alieni.append(Actor("alieno1", (alienoX, alienoY)))
@@ -195,6 +205,7 @@ def mostra_alieni():
 def aggiorna_alieni():
     global sequenza_mosse, lasers
     move_x = move_y = 0
+    # sequenza_mosse viene incrementata fino a 40 e poi si azzera
     # Movimento a sinistra
     if sequenza_mosse < 10 or sequenza_mosse > 30:
         move_x = -15
@@ -206,6 +217,9 @@ def aggiorna_alieni():
         move_x = 15
 
     for alien in alieni:
+        # Animazione oggetti: animate
+        # https://pygame-zero.readthedocs.io/en/stable/builtins.html
+        # tween = interpolazione
         animate(
             alien, pos=(alien.x + move_x, alien.y + move_y),
             duration = 0.5, tween = "linear"
@@ -218,6 +232,7 @@ def aggiorna_alieni():
             # Spara laser 
             if randint(0, 10) == 0:
                 l = len(lasers)
+                # Dal basso (midbottom) dell'alieno
                 lasers.append(Actor("laser1", midtop=alien.midbottom))
                 lasers[l].status = 0
                 lasers[l].type = 0
