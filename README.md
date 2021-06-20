@@ -6,7 +6,11 @@ Le risorse principali sono in lingua italiana.
 Quattro sessioni di circa 2h:
 
 1 - Introduzione al corso, a Python, basi  
+[link alla registrazione](https://youtu.be/zjXXappgQak)
+
 2 - Introduzione a PyGame Zero e primi giochi  
+[link alla registrazione](https://youtu.be/qqv4d4IbOpM)
+
 3 - Tris di giochi a difficoltà crescente  
 4 - Altro tris di giochi a difficoltà crescente  
 
@@ -35,11 +39,11 @@ https://www.mattlayman.com/blog/2019/teach-kid-code-pygame-zero/
 Esempi ufficiali della repo   
 https://github.com/lordmauve/pgzero/tree/master/examples
 
+https://github.com/TechnoVisual/Pygame-Zero
+
 https://github.com/rajasekaranap/pygamezero-examples
 
 https://github.com/Wireframe-Magazine/Code-the-Classics
-
-https://github.com/lordmauve/pgzero/tree/master/examples
 
 https://github.com/Belgin-Android/PgZero_Game
 
