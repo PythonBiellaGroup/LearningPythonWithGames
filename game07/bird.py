@@ -46,7 +46,7 @@ def draw():
     tubo_bottom2.draw()
     uccello.draw()
 
-    # Punteggio attuale
+    # Punteggio della partita in corso
     screen.draw.text(
         str(uccello.punteggio),
         color = "red",
@@ -98,6 +98,9 @@ def reset_tubi():
 
 
 def update_tubi():
+    '''
+    Update dei tubi, funzione richiamata dalla update generale
+    '''
     global dizionario
     # I tubi scorrono...
     tubo_top1.left -= VELOCITA
@@ -105,7 +108,7 @@ def update_tubi():
     tubo_top2.left -= VELOCITA
     tubo_bottom2.left -= VELOCITA
 
-    # Ogni volta che il tubo "scorre" aggiorno il punteggio
+    # Ogni volta che il tubo "esce" aggiorno il punteggio
     if tubo_top1.right < 0 or tubo_top2.right < 0:
         if not uccello.morto:
             uccello.punteggio += 1
@@ -117,6 +120,9 @@ def update_tubi():
 
 
 def update_uccello():
+    '''
+    Update del giocatore, funzione richiamata dalla update generale
+    '''
     # L'uccello si muove solo verticalmente
     global inzio_gioco
     uy = uccello.vy
