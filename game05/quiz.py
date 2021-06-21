@@ -113,6 +113,11 @@ def leggi_prossima_domanda():
     '''
     global indice_domande
     indice_domande = indice_domande + 1
+    # Prende dalla lista il primo elemento della lista domande
+    # e lo restutisce "spezzato" come lista:
+    # indice 0 - domanda
+    # indici 1-4 - opzioni risposte
+    # indice 5 - risposta esatta
     return domande.pop(0).split("|")
     
 

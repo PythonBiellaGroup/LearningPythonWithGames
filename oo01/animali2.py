@@ -64,4 +64,4 @@ def draw():
 def update():
     for a in Animale.tutti: a.move()
 
-pgzrun.go()    
+pgzrun.go()   

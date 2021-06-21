@@ -73,6 +73,7 @@ def draw():
 def set_tubi():
     '''
     Funzione che piazza i primi due tubi per volta
+    tubo_gap_y1, tubo_gap_y2 rappresenta la componente casuale dell'altezza
     '''
     tubo_gap_y1 = randint(200, HEIGHT-200)
     tubo_top1.pos = (WIDTH/2, tubo_gap_y1 - GAP/2)
@@ -85,6 +86,7 @@ def set_tubi():
 def reset_tubi():
     '''
     Funzione che rimette i tubi quando spariscono
+    tubo_gap_y1, tubo_gap_y2 rappresenta la componente casuale dell'altezza
     '''
     if tubo_top1.right < 0:
         tubo_gap_y1 = randint(200, HEIGHT-200)

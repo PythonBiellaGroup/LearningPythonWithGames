@@ -43,6 +43,7 @@ def draw():
     if indice_prossimo_satellite < NUM_SATELLITI:
         tempo_totale = time() - tempo_iniziale
         screen.draw.text(str(round(tempo_totale,2)), (10,10), fontsize=30)
+        #screen.draw.text(str(tempo_totale), (10,10), fontsize=30)
     else:
         screen.draw.text(str(round(tempo_totale,2)), (10,10), fontsize=30)
 
