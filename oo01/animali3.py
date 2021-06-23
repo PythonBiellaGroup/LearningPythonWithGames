@@ -4,15 +4,15 @@ import random, math, time
 WIDTH = 800
 HEIGHT = 600
 
-class Animal(Actor):
+class Animale(Actor):
 
-    all = []
+    tutti = []
 
     def __init__(self, img):
-        super(Animal, self).__init__(img)
+        super(Animale, self).__init__(img)
         self.x = random.randint(WIDTH*1/5, WIDTH*4/5)
         self.y = random.randint(HEIGHT*1/5, HEIGHT*4/5)
-        Animal.all.append(self)
+        Animale.tutti.append(self)
 
     def move(self):
         for o in self.other_animals():
@@ -20,7 +20,7 @@ class Animal(Actor):
 
     def other_animals(self):
         """All the animals except us"""
-        return [a for a in Animal.all if a != self]
+        return [a for a in Animale.tutti if a != self]
 
     def move_by_attraction(self, other):
         angle = self.angle_to(other)
@@ -46,19 +46,19 @@ class Animal(Actor):
         return 0.2 * -math.cos(d/40)
 
 
-class Sheep(Animal):
+class Pecora(Animale):
 
     def __init__(self):
         super().__init__('pecora.png')
 
 
-class BlackSheep(Animal):
+class PecoraNera(Animale):
 
     def __init__(self):
         super().__init__('pecora_nera.png')
 
 
-class SheepDog(Animal):
+class Cane(Animale):
 
     def __init__(self):
         super().__init__('cane.png')
@@ -67,16 +67,16 @@ class SheepDog(Animal):
 
 # Make some animals
 for i in range(10):
-    Sheep()
-    BlackSheep()
+    Pecora()
+    PecoraNera()
 
-SheepDog()
+Cane()
 
 def draw():
-    screen.blit('southdowns.jpeg', (0,0))
-    for a in Animal.all: a.draw()
+    screen.blit('praterie.jpeg', (0,0))
+    for a in Animale.tutti: a.draw()
 
 def update():
-    for a in Animal.all: a.move()
+    for a in Animale.tutti: a.move()
 
 pgzrun.go()    

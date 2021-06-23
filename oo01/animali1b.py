@@ -5,14 +5,19 @@ WIDTH = 500
 HEIGHT = 400
 TITLE = "Animali (simulazione)"
 
-class Animale(Actor):
+'''
+Creo più oggetti dello stesso tipo
+e una variabile di classe: tutte
+'''
+
+class Pecora(Actor):
     '''
-    Animale è un nuovo tipo di Actor
+    Pecora è un nuovo tipo di Actor
     ovvero può averne lo stesso comportamento
     e gli stessi attributi
     Questo è il metodo costruttore
     '''
-    tutti = []
+    tutte = []
 
     def __init__(self):
         super().__init__('pecora.png')
@@ -20,7 +25,7 @@ class Animale(Actor):
         self.y = random.randint(0, HEIGHT)
         self.veloc_x = random.uniform(-1,1)
         self.veloc_y = random.uniform(-1,1)
-        Animale.tutti.append(self)
+        Pecora.tutte.append(self)
 
     def muovi(self):
         self.x += self.veloc_x
@@ -28,16 +33,16 @@ class Animale(Actor):
 
 # Creo quattro "istanze" (anonime)
 # Per controllarle posso usare la variabile di classe "tutti"
-Animale()
-Animale()
-Animale()
-Animale()
+Pecora()
+Pecora()
+Pecora()
+Pecora()
 
 def draw():
-    screen.blit('southdowns.jpeg', (0,0))
-    for a in Animale.tutti: a.draw()
+    screen.blit('praterie.jpeg', (0,0))
+    for p in Pecora.tutte: p.draw()
 
 def update():
-    for a in Animale.tutti: a.muovi()
+    for p in Pecora.tutte: p.muovi()
 
 pgzrun.go()

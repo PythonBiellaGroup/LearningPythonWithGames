@@ -3,9 +3,15 @@ import random
 
 WIDTH = 600
 HEIGHT = 400
-TITLE = "Animali (simulazione)"
+TITLE = "Pecore (simulazione)"
 
-class Animale(Actor):
+'''
+Introduzione agli oggetti
+Pecora è un oggetto che eredita le caratteristiche di Actor
+'''
+
+
+class Pecora(Actor):
     '''
     Animale è un nuovo tipo di Actor
     ovvero può averne lo stesso comportamento
@@ -23,13 +29,13 @@ class Animale(Actor):
         self.x += 1
         self.y += 0.5
 
-a = Animale()
+p = Pecora()
 
 def draw():
-    screen.blit('southdowns.jpeg', (0,0))
-    a.draw()
+    screen.blit('praterie.jpeg', (0,0))
+    p.draw()
 
 def update():
-    a.move()
+    p.muovi()
 
 pgzrun.go()
