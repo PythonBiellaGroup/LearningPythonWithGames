@@ -3,7 +3,7 @@ import random
 
 WIDTH = 500
 HEIGHT = 400
-TITLE = "Animali (simulazione)"
+TITLE = "Pecore (simulazione)"
 
 '''
 Creo più oggetti dello stesso tipo
@@ -30,6 +30,13 @@ class Pecora(Actor):
     def muovi(self):
         self.x += self.veloc_x
         self.y += self.veloc_y
+        self.rimani_in_finestra()
+
+    def rimani_in_finestra(self):
+        if self.x < 20:         self.x = 20
+        elif self.x > WIDTH - 20:   self.x = WIDTH - 20
+        if self.y < 20:         self.y = 20
+        elif self.y > HEIGHT - 20:  self.y = HEIGHT - 20        
 
 # Creo quattro "istanze" (anonime)
 # Per controllarle posso usare la variabile di classe "tutti"

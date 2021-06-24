@@ -5,15 +5,16 @@ from animali_lib import *
 
 WIDTH = 800
 HEIGHT = 600
+TITLE = "Animali (simulazione)"
 MAX_SPEED = 2
 
-class Status(Enum):
-    DEAD = 0
-    ALIVE = 1
+class Stato(Enum):
+    MORTO = 0
+    VIVO = 1
 
-class Animal(Actor):
+class Animale(Actor):
 
-    all = []
+    tutti = []
 
     def __init__(self, what):
         super(Animal, self).__init__('%s.png' % what)
@@ -86,8 +87,7 @@ class Sheep(Animal):
         """Positive number means attraction, negative repulsion"""
         d = self.distance_to(other)
 
-        # Attraction gets stronger the closer we get to other sheep, unless
-        # we get too close
+        # Attratte le une dalle altre ma non sovrapposte
         if other.what == 'pecora':
             if d > 50: return 5 / (d / 5) ** 2
             else:      return -5 / d

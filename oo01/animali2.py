@@ -7,6 +7,7 @@ Le pecore si radunano utilizzando funzioni matematiche!
 
 WIDTH = 800
 HEIGHT = 600
+TITLE = "Pecore (simulazione)"
 
 class Pecora(Actor):
 
@@ -21,6 +22,13 @@ class Pecora(Actor):
     def muovi(self):
         for a in self.altre_pecore():
             self.muovi_per_attrazione(a)
+        self.rimani_in_finestra()
+
+    def rimani_in_finestra(self):
+        if self.x < 20:         self.x = 20
+        elif self.x > WIDTH - 20:   self.x = WIDTH - 20
+        if self.y < 20:         self.y = 20
+        elif self.y > HEIGHT - 20:  self.y = HEIGHT - 20                
 
     def altre_pecore(self):
         """Tutte le pecore eccetto se stessa"""

@@ -3,6 +3,7 @@ import random, math, time
 import pygame
 WIDTH = 800
 HEIGHT = 600
+TITLE = "Animali (simulazione)"
 
 class Animal(Actor):
 
@@ -55,7 +56,7 @@ class Sheep(Animal):
     def attraction_to(self, other):
         d = self.distance_to(other)
         if isinstance(other, Sheep):
-            # Attraction until we get too close
+            # Attratte le une dalle altre ma non sovrapposte
             return 0.1 * -math.cos(d/40)
         elif isinstance(other, SheepDog):
             # Move away

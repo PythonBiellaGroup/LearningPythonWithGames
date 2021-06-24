@@ -5,6 +5,7 @@ from animali_lib import xy_from_angle_mag, angle_mag_from_xy
 
 WIDTH = 800
 HEIGHT = 600
+TITLE = "Animali (simulazione)"
 MAX_VEL = 1.5
 
 class Stato(Enum):
@@ -98,7 +99,7 @@ class Pecora(Animale):
         d = self.distanza_da(altra)
 
         if altra.quale == 'pecora':
-            # Attraction until we get too close
+            # Attratte le une dalle altre ma non sovrapposte
             d = self.distanza_da(altra)
             return (-30/d) + 0.01*d
 

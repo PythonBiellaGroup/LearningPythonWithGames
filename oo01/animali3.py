@@ -3,6 +3,7 @@ import random, math, time
 
 WIDTH = 800
 HEIGHT = 600
+TITLE = "Animali (simulazione)"
 
 class Animale(Actor):
 
@@ -14,9 +15,16 @@ class Animale(Actor):
         self.y = random.randint(HEIGHT*1/5, HEIGHT*4/5)
         Animale.tutti.append(self)
 
-    def move(self):
+    def muovi(self):
         for o in self.other_animals():
             self.move_by_attraction(o)
+        self.rimani_in_finestra()
+
+    def rimani_in_finestra(self):
+        if self.x < 20:         self.x = 20
+        elif self.x > WIDTH - 20:   self.x = WIDTH - 20
+        if self.y < 20:         self.y = 20
+        elif self.y > HEIGHT - 20:  self.y = HEIGHT - 20                
 
     def other_animals(self):
         """All the animals except us"""
@@ -77,6 +85,6 @@ def draw():
     for a in Animale.tutti: a.draw()
 
 def update():
-    for a in Animale.tutti: a.move()
+    for a in Animale.tutti: a.muovi()
 
 pgzrun.go()    
