@@ -15,22 +15,22 @@ class Animal(Actor):
         self.y = random.randint(HEIGHT*1/5, HEIGHT*4/5)
         Animal.all.append(self)
 
-    def move(self):
-        for o in self.other_animals():
-            self.move_by_attraction(o)
+    def muovi(self):
+        for o in self.altri_animali():
+            self.muovi_per_attrazione(o)
 
-    def other_animals(self):
+    def altri_animali(self):
         """All the animals except us"""
         return [a for a in Animal.all if a != self]
 
-    def move_by_attraction(self, other):
+    def muovi_per_attrazione(self, other):
         angle = self.angle_to(other)
-        fx = math.cos(angle) * self.attraction_to(other)
-        fy = math.sin(angle) * self.attraction_to(other)
+        fx = math.cos(angle) * self.attrazione_da(other)
+        fy = math.sin(angle) * self.attrazione_da(other)
         self.x += fx
         self.y += fy
 
-    def distance_to(self, other):
+    def distanza_da(self, other):
         # Distances
         dx = self.x - other.x
         dy = self.y - other.y
@@ -41,7 +41,7 @@ class Animal(Actor):
         # 0 is left, pi/2 is up, pi is right, -pi/2 down
         return math.atan2(other.y - self.y, other.x - self.x)
 
-    def attraction_to(self, other):
+    def attrazione_da(self, other):
         return 0
 
 
@@ -53,13 +53,13 @@ class Sheep(Animal):
         else:
             super().__init__('pecora.png')
 
-    def attraction_to(self, other):
-        d = self.distance_to(other)
+    def attrazione_da(self, other):
+        d = self.distanza_da(other)
         if isinstance(other, Sheep):
             # Attratte le une dalle altre ma non sovrapposte
             return 0.1 * -math.cos(d/40)
         elif isinstance(other, SheepDog):
-            # Move away
+            # muovi away
             return -100/d+0.001
 
 
@@ -68,7 +68,7 @@ class SheepDog(Animal):
     def __init__(self):
         super().__init__('cane.png')
 
-    def move(self):
+    def muovi(self):
         self.x, self.y = pygame.mouse.get_pos()
 
 # Make some animals
@@ -82,6 +82,6 @@ def draw():
     for a in Animal.all: a.draw()
 
 def update():
-    for a in Animal.all: a.move()
+    for a in Animal.all: a.muovi()
 
 pgzrun.go()

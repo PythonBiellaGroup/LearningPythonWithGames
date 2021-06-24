@@ -17,75 +17,75 @@ class Animale(Actor):
     tutti = []
 
     def __init__(self, what):
-        super(Animal, self).__init__('%s.png' % what)
+        super(Animale, self).__init__('%s.png' % what)
         self.what = what
         self.x = random.randint(0, WIDTH)
         self.y = random.randint(0, HEIGHT)
         self.direction = random.uniform(0, math.pi * 2)
         self.max_speed = MAX_SPEED
         self.speed = random.uniform(2,self.max_speed)
-        self.status = Status.ALIVE
+        self.status = Stato.VIVO
 
-        Animal.all.append(self)
+        Animale.tutti.append(self)
 
-    def move(self):
-        if self.status == Status.DEAD:
+    def muovi(self):
+        if self.status == Stato.MORTO:
             return
 
         # Our default direction vector
         dx, dy = xy_from_angle_mag(self.direction, self.speed)
 
         # Change our direction and speed according to other animals
-        for o in self.other_animals():
-            fx, fy = xy_from_angle_mag(self.angle_to(o), self.attraction_to(o))
+        for o in self.altri_animali():
+            fx, fy = xy_from_angle_mag(self.angolo_da(o), self.attrazione_da(o))
             dx += fx
             dy += fy
 
         # Uptdate direction with attractions above
         self.direction, self.speed = angle_mag_from_xy(dx, dy)
-        # Don't move too fast
+        # Don't muovi too fast
         self.speed = min(self.max_speed, self.speed)
-        # Create the actual movement vector given that we might have reduced speed
+        # Create the actual muoviment vector given that we might have reduced speed
         dx, dy = xy_from_angle_mag(self.direction, self.speed)
 
-        # Move
+        # muovi
         self.x += dx
         self.y += dy
 
-        # Wrap around
+        # Gestione entrata/uscita dallo schermo
         if self.x < 0:         self.x = WIDTH
         elif self.x > WIDTH:   self.x = 0
         if self.y < 0:         self.y = HEIGHT
         elif self.y > HEIGHT:  self.y = 0
 
-    def other_animals(self):
+    def altri_animali(self):
         """All the animals except us"""
-        return [a for a in Animal.all if a != self]
+        return [a for a in Animale.tutti if a != self]
 
-    def distance_to(self, other):
+    def distanza_da(self, other):
         # Pythagoras
         return math.sqrt((self.x - other.x) ** 2 + (self.y - other.y) ** 2)
 
-    def angle_to(self, other):
+    def angolo_da(self, other):
         # 0 is left, pi/2 is up, pi is right, -pi/2 down
         return math.atan2(other.y - self.y, other.x - self.x)
 
-    def attraction_to(self, other):
+    def attrazione_da(self, other):
         # No attraction by default
         return 0
 
-class Sheep(Animal):
+class Sheep(Animale):
     def __init__(self):
         super().__init__('pecora')
 
     def draw(self):
-        if self.status == Status.DEAD:
+        if self.status == Stato.MORTO:
             self.image = 'pecora_colpita.png'
         super().draw()
 
-    def attraction_to(self, other):
+    def attrazione_da(self, other):
         """Positive number means attraction, negative repulsion"""
-        d = self.distance_to(other)
+        d = self.distanza_da(other)
 
         # Attratte le une dalle altre ma non sovrapposte
         if other.what == 'pecora':
@@ -96,25 +96,25 @@ class Sheep(Animal):
             # A wolf, run away!
             return -15 / (d / 10) ** 2
 
-class Wolf(Animal):
+class Wolf(Animale):
     def __init__(self):
         super().__init__('lupo')
         self.max_speed = MAX_SPEED*1.5
 
-    def move(self):
-        super().move()
-        others = self.other_animals()
+    def muovi(self):
+        super().muovi()
+        altri = self.altri_animali()
 
         # Caught a sheep?
-        i = self.collidelist(others)
-        if i != -1 and others[i].what == 'pecora':
-            others[i].status = Status.DEAD
+        i = self.collidelist(altri)
+        if i != -1 and altri[i].what == 'pecora':
+            altri[i].status = Stato.MORTO
 
-    def attraction_to(self, other):
+    def attrazione_da(self, other):
         # Attraction gets stronger the closer the other gets
-        d = self.distance_to(other)
+        d = self.distanza_da(other)
         if other.what == 'pecora':
-            if other.status == Status.DEAD:
+            if other.status == Stato.MORTO:
                 return 0
             else:
                 return 15 / (d / 10) ** 2
@@ -127,11 +127,11 @@ Wolf()
 Wolf()
 
 def draw():
-    screen.blit('southdowns.jpeg', (0,0))
-    for a in Animal.all: a.draw()
+    screen.blit('praterie.jpeg', (0,0))
+    for a in Animale.tutti: a.draw()
     #time.sleep(2)
 
 def update():
-    for a in Animal.all: a.move()
+    for a in Animale.tutti: a.muovi()
 
 pgzrun.go()    

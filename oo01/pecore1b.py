@@ -8,6 +8,10 @@ TITLE = "Pecore (simulazione)"
 '''
 Creo più oggetti dello stesso tipo
 e una variabile di classe: tutte
+
+Movimento casuale
+
+Rimane in finestra
 '''
 
 class Pecora(Actor):

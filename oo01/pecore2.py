@@ -2,7 +2,9 @@ import pgzrun
 import random, math, time
 
 '''
+Simuliamo il gregge
 Le pecore si radunano utilizzando funzioni matematiche!
+https://pygamezero-animals.readthedocs.io/en/latest/part2.html
 '''
 
 WIDTH = 800

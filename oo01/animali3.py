@@ -16,8 +16,8 @@ class Animale(Actor):
         Animale.tutti.append(self)
 
     def muovi(self):
-        for o in self.other_animals():
-            self.move_by_attraction(o)
+        for o in self.altri_animali():
+            self.muovi_per_attrazione(o)
         self.rimani_in_finestra()
 
     def rimani_in_finestra(self):
@@ -26,31 +26,31 @@ class Animale(Actor):
         if self.y < 20:         self.y = 20
         elif self.y > HEIGHT - 20:  self.y = HEIGHT - 20                
 
-    def other_animals(self):
+    def altri_animali(self):
         """All the animals except us"""
         return [a for a in Animale.tutti if a != self]
 
-    def move_by_attraction(self, other):
-        angle = self.angle_to(other)
-        fx = math.cos(angle) * self.attraction_to(other)
-        fy = math.sin(angle) * self.attraction_to(other)
+    def muovi_per_attrazione(self, other):
+        angle = self.angolo_da(other)
+        fx = math.cos(angle) * self.attrazione_da(other)
+        fy = math.sin(angle) * self.attrazione_da(other)
         self.x += fx
         self.y += fy
 
-    def distance_to(self, other):
+    def distanza_da(self, other):
         # Distances
         dx = self.x - other.x
         dy = self.y - other.y
         # Pythagoras
         return math.sqrt(dx**2 + dy**2)
 
-    def angle_to(self, other):
+    def angolo_da(self, other):
         # 0 is left, pi/2 is up, pi is right, -pi/2 down
         return math.atan2(other.y - self.y, other.x - self.x)
 
-    def attraction_to(self, other):
+    def attrazione_da(self, other):
         # Attraction until we get too close
-        d = self.distance_to(other)
+        d = self.distanza_da(other)
         return 0.2 * -math.cos(d/40)
 
 

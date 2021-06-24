@@ -8,6 +8,7 @@ TITLE = "Pecore (simulazione)"
 '''
 Introduzione agli oggetti
 Pecora è un oggetto che eredita le caratteristiche di Actor
+https://pygamezero-animals.readthedocs.io/en/latest/part1.html
 '''
 
 
