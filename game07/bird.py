@@ -25,9 +25,9 @@ uccello.punteggio = 0
 # Velocità verticale
 uccello.vy = 0
 
-# Actors have an “anchor position”, which is a convenient way to position the actor in the scene. 
-# By default, the anchor position is the center, so the .pos attribute refers to the center of the actor
-# (and so do the x and y coordinates)
+# Gli Actors hanno una “anchor position”, che è un modo conveniente per posizionarli nella scena (schermo) 
+# Per default è center, in modo che l'attributo .pos (coordinate x e y) si riferisca al centro dell'attore
+# In questo caso no...
 tubo_top1 = Actor("sopra", anchor=("left", "bottom"))
 tubo_bottom1 = Actor("sotto", anchor=("left", "top"))
 
@@ -36,10 +36,11 @@ tubo_bottom2 = Actor("sotto", anchor=("left", "top"))
 
 # Salviamo il punteggio più alto in un dizionario
 dizionario = {"highscore":0}
-inzio_gioco = False
+inizio_gioco = False
 
 def draw():
     screen.blit("sfondo", (0,0))
+    # Due tubi e l'uccello
     tubo_top1.draw()
     tubo_bottom1.draw()
     tubo_top2.draw()
@@ -62,7 +63,7 @@ def draw():
         fontsize = 30,
         shadow = (1,1)
     )
-    if not inzio_gioco:
+    if not inizio_gioco:
         # Scritta gialla con bordo nero
         screen.draw.text(
             "Premi un tasto qualsiasi", color = "yellow",
@@ -126,7 +127,7 @@ def update_uccello():
     Update del giocatore, funzione richiamata dalla update generale
     '''
     # L'uccello si muove solo verticalmente
-    global inzio_gioco
+    global inizio_gioco
     uy = uccello.vy
     uccello.vy += GRAVITA
     uccello.y += (uy + uccello.vy)/2
@@ -159,7 +160,7 @@ def update_uccello():
         uccello.punteggio = 0
         uccello.vy = 0
         set_tubi()
-        inzio_gioco = False
+        inizio_gioco = False
     
 
 def set_uccello_morto():
@@ -167,14 +168,17 @@ def set_uccello_morto():
         uccello.image = "uccellomorto"
 
 def on_key_down():
-    global inzio_gioco
-    inzio_gioco = True
+    '''
+    Qualsiasi tasto va bene
+    '''
+    global inizio_gioco
+    inizio_gioco = True
     # Ricorda che le y diminuiscono verso l'alto, l'origine è in alto a sinistra
     if not uccello.morto:
         uccello.vy =- FORZA_BATTITO_ALI
 
 def update():
-    if inzio_gioco:
+    if inizio_gioco:
         update_tubi()
         update_uccello()
 
