@@ -1,5 +1,5 @@
 import pgzrun
-import random, math, time
+import random, math#, time
 from enum import Enum
 import pygame
 from animali_lib import *
@@ -32,20 +32,20 @@ class Animale(Actor):
         if self.stato == Stato.MORTO:
             return
 
-        # Our default direzione vector
+        # Vettore direzione di default
         dx, dy = xy_from_angle_mag(self.direzione, self.velocita)
 
-        # Change our direzione and velocita according to altro animals
+        # Cambia direzione e velocita in base all'altro animale
         if controlla_animali:
             for o in self.altri_animali():
-                fx, fy = xy_from_angle_mag(self.angle_to(o), self.attrazione_da(o))
+                fx, fy = xy_from_angle_mag(self.angolo_da(o), self.attrazione_da(o))
                 dx += fx
                 dy += fy
 
-        # Check no-go zones
+        # Controlla zona interdetta
         if controlla_zone:
             for z in Zona.tutte:
-                fx, fy = xy_from_angle_mag(self.angle_to(z), z.attrazione_da(self))
+                fx, fy = xy_from_angle_mag(self.angolo_da(z), z.attrazione_da(self))
                 dx += fx
                 dy += fy
 
@@ -76,19 +76,19 @@ class Animale(Actor):
         elif self.y > HEIGHT - 20:  self.y = HEIGHT - 20   
 
     def altri_animali(self):
-        """tutti the animals except us"""
+        """tutti gli animali eccetto noi"""
         return [a for a in Animale.tutti if a != self]
 
     def distanza_da(self, altro):
-        # Pythagoras
+        # Pitagora
         return math.sqrt((self.x - altro.x) ** 2 + (self.y - altro.y) ** 2)
 
-    def angle_to(self, altro):
-        # 0 is left, pi/2 is up, pi is right, -pi/2 down
-        return math.atan2(altro.y - self.y, altro.x - self.x)
+    def angolo_da(self, altra):
+        # 0 sinistra, pi/2 altro, pi detra, -pi/2 basso
+        return math.atan2(altra.y - self.y, altra.x - self.x)
 
     def attrazione_da(self, altro):
-        # No attraction by default
+        # Per default, nessuna attrazione
         return 0
 
 
@@ -98,26 +98,26 @@ class Zona():
     SICURA = (150, 255, 150)
     INTERDETTA = (0, 171, 255) #Acqua
 
-    def __init__(self, x, y, size, ztype):
+    def __init__(self, x, y, size, tipo_zona):
         self.x = x
         self.y = y
         self.size = size
-        self.ztype = ztype
+        self.tipo_zona = tipo_zona
 
         Zona.tutte.append(self)
 
     def draw(self):
-        screen.draw.filled_circle((self.x, self.y), self.size // 2, self.ztype)
+        screen.draw.filled_circle((self.x, self.y), self.size // 2, self.tipo_zona)
 
     def attrazione_da(self, a):
-        """How attractive is this zone to this animal?"""
-        distance = a.distanza_da(self)
-        from_edge = distance - self.size // 2
+        """Quanto è attrattiva questa zona agli animali?"""
+        distanza = a.distanza_da(self)
+        from_edge = distanza - self.size // 2
 
-        if self.ztype == Zona.INTERDETTA:
+        if self.tipo_zona == Zona.INTERDETTA:
             if from_edge <= 0: return -100
 
-        if self.ztype == Zona.SICURA and isinstance(a, Lupo):
+        if self.tipo_zona == Zona.SICURA and isinstance(a, Lupo):
             if from_edge <= 0: return -100
 
         return 0
@@ -127,12 +127,12 @@ class Zona():
 class Pecora(Animale):
     def __init__(self):
         super().__init__('pecora.png')
-        # Start top left
+        # Iniziano in alto a sinistra
         self.x = self.y = random.randint(5,40)
         self.max_vel = 1
 
     def attrazione_da(self, altro):
-        """Positive number means attraction, negative repulsion"""
+        """Numero positivo significa attrazione; negativo repulsione"""
         d = self.distanza_da(altro)
 
         # Attratte le une dalle altre (quelle vive) ma non sovrapposte
@@ -140,7 +140,7 @@ class Pecora(Animale):
             return min(0.25, (-30/(d+0.001)) + 0.01*d)
 
         elif isinstance(altro, Lupo):
-            # A Lupo, run away!
+            # Un lupo, scappa!
             return -100/d
 
         elif isinstance(altro, Cane):
@@ -163,7 +163,7 @@ class Lupo(Animale):
             altri[i].stato = Stato.MORTO
 
     def attrazione_da(self, altro):
-        # Attraction gets stronger the closer the altro gets
+        # L'attrazione diventa più forte all'avvicinarsi
         d = self.distanza_da(altro)
         if isinstance(altro, Pecora):
             if altro.stato == Stato.MORTO:
@@ -182,7 +182,7 @@ class Cane(Animale):
     def muovi(self):
         super().muovi(controlla_animali=False, controlla_zone=True, controlla_mouse=True)
 
-    def attrazione_mouse(self, distance):
+    def attrazione_mouse(self, distanza):
         return 1
 
 
