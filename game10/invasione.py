@@ -8,12 +8,14 @@ HEIGHT = 700
 CENTRO_X = WIDTH / 2
 CENTRO_Y = HEIGHT / 2
 
+# Lista alieni
 alieni = []
+# Lista lasers
 lasers = []
 # Usata per gestire le mosse degli alieni
 sequenza_mosse = 0
 # contatore_mosse e ritardo_mossa usati per ritardare il movimento
-# altrimenti il cambio immagine degli alieni sarebbe troppo veloce
+# altrimenti il cambio immagine / animazione degli alieni sarebbe troppo veloce
 contatore_mosse = 0
 ritardo_mossa = 30
 punteggio = 0
@@ -24,7 +26,10 @@ giocatore.vite = 3
 
 def draw():
     screen.blit("sfondo", (0,0))
+    # In partenza status è 0
+    # Se il giocatore è colpito, inizia l'animazione incrementando status fino a 30
     # math.floor arrotonda all'intero più vicino
+    # Vedere funzione init_game()  
     giocatore.image = giocatore.images[math.floor(giocatore.status/6)]
     giocatore.draw()
     mostra_alieni()
@@ -64,17 +69,19 @@ def mostra_vite():
 
 
 def update():
+    '''
+    Gestione aggiornamenti
+    '''
     global contatore_mosse, lasers, punteggio
     if giocatore.status < 30 and len(alieni) > 0:
         controlla_tasti()
         aggiorna_lasers()
         contatore_mosse += 1
-        # Aggiunto ritardo nell'aggiornamento
+        # Aggiunto ritardo nell'aggiornamento degli alieni
         if contatore_mosse == ritardo_mossa:
             aggiorna_alieni()
             contatore_mosse = 0
-        # Se il giocatore è colpito...
-        # Inizia l'animazione incrementando status fino a 30
+        # Se il giocatore è colpito, inizia l'animazione incrementando status fino a 30
         if giocatore.status > 0:
             giocatore.status += 1
             if giocatore.status == 30:
@@ -107,9 +114,10 @@ def controlla_tasti():
             # https://pygame-zero.readthedocs.io/en/stable/builtins.html#sounds
             sounds.laser.play()
             clock.schedule(attiva_laser, 1.0)
+            # Lunghezza della lista corrente dei lasers, allo scopo di aggiungere quello nuovo
             l = len(lasers)
             # Il laser parte dalla posizione dell'astronave 
-            # (un po' più sù per la precisione)
+            # (un po' più sù, per la precisione)
             lasers.append(Actor("laser2",(giocatore.x, giocatore.y-32)))
             lasers[l].status = 0
             lasers[l].type = 1
@@ -203,7 +211,7 @@ def mostra_alieni():
 
 
 def aggiorna_alieni():
-    global sequenza_mosse, lasers
+    global sequenza_mosse, ritardo_mossa, lasers
     move_x = move_y = 0
     # sequenza_mosse viene incrementata fino a 40 e poi si azzera
     # Movimento a sinistra
@@ -212,6 +220,7 @@ def aggiorna_alieni():
     # Movimento in basso
     if sequenza_mosse == 10 or sequenza_mosse == 30:
         move_y = 50
+        ritardo_mossa -=  1
     # Movimento a destra
     if sequenza_mosse > 10 and sequenza_mosse < 30:
         move_x = 15
@@ -236,7 +245,7 @@ def aggiorna_alieni():
                 lasers.append(Actor("laser1", midtop=alien.midbottom))
                 lasers[l].status = 0
                 lasers[l].type = 0
-    
+    # Contatatore sequenza per animare gli alieni
     sequenza_mosse += 1
     if sequenza_mosse == 40:
         sequenza_mosse = 0
