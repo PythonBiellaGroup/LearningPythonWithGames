@@ -4,6 +4,8 @@ TITLE = "Quiz"
 WIDTH = 870
 HEIGHT = 650
 
+TEMPO_DOMANDA = 10
+
 # Disegna componenti della GUI progettata
 scorrevole_box = Rect(0,0,880,80)
 domanda_box = Rect(0,0,650,150)
@@ -16,7 +18,7 @@ salta_box = Rect(0,0,150,330)
 
 # Variabili di gioco
 punteggio = 0
-secondi_mancanti = 10
+secondi_mancanti = TEMPO_DOMANDA
 nome_file_domande = "domande.txt"
 msg_scorrevole = ""
 is_game_over = False
@@ -147,7 +149,7 @@ def risposta_corretta():
     punteggio = punteggio + 1
     if domande:
         domanda = leggi_prossima_domanda()
-        secondi_mancanti = 10
+        secondi_mancanti = TEMPO_DOMANDA
     else:
         game_over()
 
@@ -170,7 +172,7 @@ def salta_domanda():
     global domanda, secondi_mancanti
     if domande and not is_game_over:
         domanda = leggi_prossima_domanda()
-        secondi_mancanti = 10
+        secondi_mancanti = TEMPO_DOMANDA
     else:
         game_over()
 

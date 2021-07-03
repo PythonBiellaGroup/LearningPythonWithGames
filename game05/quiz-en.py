@@ -4,6 +4,8 @@ TITLE = "Quiz Master (Daniel Pope edition)"
 WIDTH = 870
 HEIGHT = 650
 
+TIME_QUESTION = 20
+
 marquee_box = Rect(0,0,880,80)
 question_box = Rect(0,0,650,150)
 timer_box = Rect(0,0,150,150)
@@ -14,7 +16,7 @@ answer_box4 = Rect(0,0,300,150)
 skip_box = Rect(0,0,150,330)
 
 score = 0
-time_left = 20
+time_left = TIME_QUESTION
 question_file_name = "daniel.txt"
 marquee_message = ""
 is_game_over = False
@@ -114,7 +116,7 @@ def correct_answer():
     score = score + 1
     if questions:
         question = read_next_question()
-        time_left = 20
+        time_left = TIME_QUESTION
     else:
         game_over()
 
@@ -131,7 +133,7 @@ def skip_question():
     global question, time_left
     if questions and not is_game_over:
         question = read_next_question()
-        time_left = 10
+        time_left = TIME_QUESTION
     else:
         game_over()
 
