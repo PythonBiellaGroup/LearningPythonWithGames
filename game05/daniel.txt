@@ -1,0 +1,4 @@
+Where is Biella?|Rep San Marino|North Italy|Vatican City|South Italy|2
+Which is the meaning of Pope in Italian?|Papa|Papa'|Pollo|Palla|1
+Which Pizza You will NOT found in Italy?|With olives|With ham|With ananas|With tuna|3
+What will You see if You type "import this"?|this|Exception|Zen of Python|imported|3
