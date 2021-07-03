@@ -3,7 +3,7 @@ Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.
 Le risorse principali sono in lingua italiana.
 
 # Programma
-Quattro sessioni di circa 2h:
+Quattro sessioni video di circa 2h sono disponibili su YouTube.
 
 1 - Introduzione al corso, a Python, basi  
 [link alla registrazione](https://youtu.be/zjXXappgQak)
@@ -12,7 +12,10 @@ Quattro sessioni di circa 2h:
 [link alla registrazione](https://youtu.be/qqv4d4IbOpM)
 
 3 - Tris di giochi a difficoltà crescente  
-4 - Altro tris di giochi a difficoltà crescente  
+[link alla registrazione](https://youtu.be/5BB3_hGxU9o)
+
+4 - Altri quattro giochi a difficoltà crescente  
+[link alla registrazione](https://youtu.be/Mks0j17dv8g)
 
 # Riferimenti
 
