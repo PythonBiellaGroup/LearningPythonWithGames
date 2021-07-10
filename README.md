@@ -2,6 +2,19 @@
 Impara a sviluppare in Python sviluppando dei giochi con PyGame Zero.  
 Le risorse principali sono in lingua italiana.
 
+I giochi presentati nei video:  
+
+game01 - Colpisci l'alieno  
+game02 - Ape Golosa  
+game03 - Connetti i satelliti  
+game04 - Stella Rossa  
+game05 - Quiz  
+game06 - Mongolfiera  
+game07 - Flappy Bird  
+game08 - Karate Kid  
+game09 - Stelle  
+game10 - Invasione dallo spazio  
+
 # Programma
 Quattro sessioni video di circa 2h sono disponibili su YouTube.
 
@@ -16,6 +29,9 @@ Quattro sessioni video di circa 2h sono disponibili su YouTube.
 
 4 - Altri quattro giochi a difficoltà crescente  
 [link alla registrazione](https://youtu.be/Mks0j17dv8g)
+
+5 - Bonus track - Intervista a Daniel Pope, il creatore di PyGameZero  
+[link alla registrazione](https://youtu.be/OXWRhpfB7mQ)
 
 # Riferimenti
 
