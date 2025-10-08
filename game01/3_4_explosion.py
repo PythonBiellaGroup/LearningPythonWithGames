@@ -1,7 +1,6 @@
-from pgzero.actor import Actor
-from pgzero.clock import clock
 from random import randint
 import pgzrun
+
 TITLE = "Colpisci l'alieno"
 WIDTH = 800
 HEIGHT = 600
