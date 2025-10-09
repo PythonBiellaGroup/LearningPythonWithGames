@@ -1,7 +1,6 @@
-from pgzero.actor import Actor
-from pgzero.clock import clock
 from random import randint
 import pgzrun
+
 TITLE = "Colpisci l'alieno"
 WIDTH = 800
 HEIGHT = 600
@@ -24,14 +23,12 @@ def piazza_alieno():
     '''
     alieno.x = randint(50, WIDTH-50)
     alieno.y = randint(50, HEIGHT-50)
-    alieno.image = "alieno"
 
 
 def on_mouse_down(pos):
     global messaggio
     if alieno.collidepoint(pos):
         messaggio = "Bel colpo!"
-        alieno.image = "esplosione"
     else:
         messaggio = "Mancato..."
 
