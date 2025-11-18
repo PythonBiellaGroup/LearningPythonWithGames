@@ -4,7 +4,7 @@ from pgzero.keyboard import keyboard
 import pgzrun
 from random import randint
 
-TITLE = "tony golosa"
+TITLE = "tony alla ricerca della musica"
 WIDTH = 600
 HEIGHT = 500
 
@@ -22,7 +22,9 @@ def draw():
     screen.blit("sfondo", (0, 0))
     nota.draw()
     tony.draw()
-    screen.draw.text("Note imparate: " + str(punteggio), color="black", topleft=(10, 10))
+    screen.draw.text(
+        "Note imparate: " + str(punteggio), color="black", topleft=(10, 10)
+    )
 
     if game_over:
         screen.fill("pink")
@@ -63,7 +65,7 @@ def update():
     nota_presa = tony.colliderect(nota)
 
     if nota_presa:
-        punteggio += 10
+        punteggio += 1
         tony.image = "tony2"
         sounds.tonyaudio2.play()
         piazza_nota()
@@ -71,5 +73,5 @@ def update():
 
 
 piazza_nota()
-clock.schedule(tempo_scaduto, 10.0)
+clock.schedule(tempo_scaduto, 60.0)
 pgzrun.go()
