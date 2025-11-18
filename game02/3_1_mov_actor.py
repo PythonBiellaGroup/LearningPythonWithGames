@@ -8,34 +8,42 @@ punteggio = 0
 game_over = False
 
 ape = Actor("ape")
-ape.pos = 100,100
+ape.pos = 100, 100
 
 fiore = Actor("fiore")
-fiore.pos = 200,200
+fiore.pos = 200, 200
+
 
 def draw():
-    screen.blit("sfondo", (0,0))
+    screen.blit("sfondo", (0, 0))
     fiore.draw()
     ape.draw()
-    screen.draw.text("Punteggio: " + str(punteggio), color="black", topleft=(10,10))
+    screen.draw.text("Punteggio: " + str(punteggio), color="black", topleft=(10, 10))
 
     if game_over:
-            screen.fill("pink")
-            screen.draw.text("Tempo scaduto! Punteggio finale: " + str(punteggio), midtop=(WIDTH/2,10), 
-            fontsize=40, color="red")
+        screen.fill("pink")
+        screen.draw.text(
+            "Tempo scaduto! Punteggio finale: " + str(punteggio),
+            midtop=(WIDTH / 2, 10),
+            fontsize=40,
+            color="red",
+        )
+
 
 def piazza_fiore():
-    fiore.x = randint(70, (WIDTH-70))
-    fiore.y = randint(70, (HEIGHT-70))
+    fiore.x = randint(70, (WIDTH - 70))
+    fiore.y = randint(70, (HEIGHT - 70))
+
 
 def tempo_scaduto():
-    global game_over 
+    global game_over
     game_over = True
 
+
 def update():
-    '''
+    """
     Funzione speciale PGZ
-    '''    
+    """
     if keyboard.left:
         ape.x = ape.x - 2
     if keyboard.right:
