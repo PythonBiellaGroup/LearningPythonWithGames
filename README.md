@@ -15,6 +15,10 @@ game08 - Karate Kid
 game09 - Stelle  
 game10 - Invasione dallo spazio  
 
+Giochi non presentati nei video:
+
+game02_1 - Tony alla ricerca della musica
+
 # Programma
 Quattro sessioni video di circa 2h sono disponibili su YouTube.
 
