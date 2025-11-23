@@ -13,31 +13,32 @@ def draw():
     """
     # Disegna l'immagine di sfondo
     screen.blit("sfondo_bn", (0, 0))
-    
+
     # Disegna gli sprite di nota e Tony
     nota.draw()
     tony.draw()
-    
+
     # Disegna il punteggio con ombra bianca
     screen.draw.text(
-        "Note imparate: " + str(punteggio), 
-        color="black", 
-        topleft=(10, 10), 
-        shadow=(1,1),  # Offset dell'ombra (x, y)
+        "Note imparate: " + str(punteggio),
+        color="black",
+        topleft=(10, 10),
+        shadow=(1, 1),  # Offset dell'ombra (x, y)
         scolor="#FFFFFF",  # Colore dell'ombra (bianco)
-        fontsize=40
+        fontsize=40,
     )
 
     # Se il gioco è finito, mostra la schermata finale
     if game_over:
         # Schermata di vittoria (se punteggio supera la soglia)
         if punteggio > VITTORIA_PUNTEGGIO:
-            screen.blit("guitar", (0, 0))  # Sfondo chitarra
+            screen.blit("vittoria", (0, 0))  # Sfondo chitarra
             screen.draw.text(
-                "Bravissimo Tony!\nSei un vero musicista!\nNote messe insieme: " + str(punteggio),
+                "Daje Tony, questo pezzo spacca!\nNote messe insieme: "
+                + str(punteggio),
                 center=(WIDTH / 2, HEIGHT / 2),
                 fontsize=60,
-                color="blue",
+                color="white",
             )
             tony.image = "tony2"  # Cambia l'immagine di Tony (versione felice)
             tony.pos = 400, 200
@@ -46,12 +47,13 @@ def draw():
         else:
             # Schermata di sconfitta
             screen.draw.text(
-                "Peccato Tony!\nDevi esercitarti di più.\nNote messe insieme: " + str(punteggio),
+                "Peccato!\nDevi esercitarti di più.\nNote messe insieme: "
+                + str(punteggio),
                 midtop=(WIDTH / 2, 10),
                 fontsize=40,
                 color="red",
             )
-        
+
         # Messaggio per ricominciare con il tasto SPAZIO
         screen.draw.text(
             "Premi SPAZIO per ricominciare",
@@ -61,11 +63,10 @@ def draw():
         )
 
 
-
 def piazza_nota():
     """
     Posiziona la nota musicale in una posizione casuale dello schermo.
-    Mantiene un margine di 70 pixel dai bordi per evitare che la nota 
+    Mantiene un margine di 70 pixel dai bordi per evitare che la nota
     appaia troppo vicino al limite dello schermo.
     """
     nota.x = randint(70, (WIDTH - 70))
@@ -100,7 +101,7 @@ def on_key_down(key):
     """
     Funzione chiamata automaticamente quando viene premuto un tasto.
     Gestisce il riavvio del gioco quando si preme SPAZIO dopo il game over.
-    
+
     Args:
         key: Il tasto premuto dall'utente
     """
@@ -116,7 +117,7 @@ def update():
     Gestisce il movimento del personaggio e il rilevamento delle collisioni.
     """
     global punteggio, game_over
-    
+
     # Esegui la logica di gioco solo se il gioco non è finito
     if not game_over:
         # Controlla i tasti freccia per muovere Tony
@@ -128,10 +129,10 @@ def update():
             tony.y -= 5  # Muove in alto
         if keyboard.down:
             tony.y += 5  # Muove in basso
-        
+
         # Controlla se Tony ha raggiunto la nota
         nota_presa = tony.colliderect(nota)
-        
+
         if nota_presa:
             punteggio += 1  # Incrementa il punteggio
             """
@@ -151,7 +152,7 @@ def update():
             elif punteggio % 7 == 5:
                 sounds.la.play()
             elif punteggio % 7 == 6:
-                sounds.si.play()    
+                sounds.si.play()
             piazza_nota()  # Posiziona una nuova nota in un punto casuale
 
 
