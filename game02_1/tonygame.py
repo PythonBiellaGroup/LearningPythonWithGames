@@ -32,7 +32,9 @@ def draw():
     if game_over:
         # Schermata di vittoria (se punteggio supera la soglia)
         if punteggio > VITTORIA_PUNTEGGIO:
-            screen.blit("vittoria", (0, 0))  # Sfondo chitarra
+            screen.blit(
+                "vittoria", (0, 0)
+            )  # Sfondo studio musicale per rappresentare la vittoria
             screen.draw.text(
                 "Daje Tony, questo pezzo spacca!\nNote messe insieme: "
                 + str(punteggio),
@@ -40,10 +42,10 @@ def draw():
                 fontsize=60,
                 color="white",
             )
-            tony.image = "tony2"  # Cambia l'immagine di Tony (versione felice)
+            tony.image = "tony2"  # Cambia l'immagine di Tony (versione vittoria)
             tony.pos = 400, 200
             tony.draw()
-            sounds.last_note.play()
+
         else:
             # Schermata di sconfitta
             screen.draw.text(
@@ -78,8 +80,13 @@ def tempo_scaduto():
     Funzione chiamata dal timer quando il tempo di gioco è finito.
     Imposta la variabile game_over a True per terminare la partita.
     """
-    global game_over
+    global game_over, musica_vittoria_suonata
     game_over = True
+
+    # fai partire la canzone per la vittoria solo se si ha vinto (e falla partire solo una volta)
+    if punteggio > VITTORIA_PUNTEGGIO and not musica_vittoria_suonata:
+        sounds.last_note.play()
+        musica_vittoria_suonata = True
 
 
 def reset_gioco():
@@ -87,9 +94,10 @@ def reset_gioco():
     Resetta tutte le variabili e lo stato del gioco per iniziare una nuova partita.
     Riporta tutto ai valori iniziali.
     """
-    global punteggio, game_over
+    global punteggio, game_over, musica_vittoria_suonata
     punteggio = 0  # Azzera il punteggio
     game_over = False  # Riattiva il gioco
+    musica_vittoria_suonata = False  # Reset variabile per la musica finale
     tony.pos = 100, 100  # Riporta Tony alla posizione iniziale
     tony.image = "tony"  # Ripristina l'immagine normale di Tony
     piazza_nota()  # Posiziona una nuova nota
@@ -170,6 +178,7 @@ VITTORIA_PUNTEGGIO = 20  # Punteggio minimo per vincere
 # Variabili di stato del gioco
 punteggio = 0  # Punteggio iniziale
 game_over = False  # Stato del gioco (False = in corso, True = finito)
+musica_vittoria_suonata = False  # Inizializziamo a False la variabile che ci fa partire la musica per la vittoria
 
 # Creazione del personaggio principale
 tony = Actor("tony")  # Crea lo sprite di Tony
