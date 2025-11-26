@@ -72,7 +72,7 @@ Per far funzionare il gioco, assicurati di avere le seguenti immagini nella cart
 - **tony2.png**: Personaggio felice per la vittoria
 - **nota_musicale.png**: Nota da raccogliere (dimensioni consigliate: 40x40px)
 - **sfondo_bn.png**: Sfondo del gioco (800x600px)
-- **guitar.png**: Sfondo per schermata vittoria (800x600px)
+- **vittoria.png**: Sfondo per schermata vittoria (800x600px)
 
 ## 🔊 Risorse audio
 
@@ -130,7 +130,7 @@ I contributi sono benvenuti! Sentiti libero di:
 
 ## 👨‍💻 Autore
 
-Creato con ❤️ per insegnare Python attraverso il gioco
+Creato con ❤️ da Python Biella Group per insegnare Python attraverso il gioco
 
 ## 📄 Licenza
 
