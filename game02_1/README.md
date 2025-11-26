@@ -49,7 +49,7 @@ In questo gioco didattico, controlli Tony che deve raccogliere quante più note 
 │   ├── tony2.png          # Sprite di Tony (felice)
 │   ├── nota_musicale.png  # Sprite della nota musicale
 │   ├── sfondo_bn.png      # Sfondo del gioco
-│   └── guitar.png         # Sfondo vittoria
+│   └── vittoria.png       # Sfondo vittoria
 │
 ├── sounds/                 # Cartella dei suoni
 │   ├── do.wav             # Nota DO
