@@ -1,6 +1,6 @@
 """
 ================================================================================
-STRANGER STARS - Gioco di abilità con personaggi di Stranger Things
+STRANGER STARS - Falling Stars versione Stranger Things
 ================================================================================
 
 FLUSSO DEL GIOCO:
@@ -9,22 +9,7 @@ FLUSSO DEL GIOCO:
 3. Livelli: ogni livello aumenta numero di personaggi e velocità
 4. Sottosopra: periodicamente si inverte la gravità!
 5. Game Over: se clicchi il personaggio sbagliato o non lo prendi in tempo
-6. Vittoria: se superi tutti i 10 livelli
-
-STRUTTURA DEL CODICE:
-- COSTANTI: valori fissi del gioco (dimensioni, velocità, ecc.)
-- VARIABILI DI STATO: tengono traccia dello stato corrente del gioco
-- draw(): disegna tutto sullo schermo (chiamata automaticamente)
-- update(): aggiorna la logica del gioco 60 volte al secondo
-- on_mouse_down(): gestisce i click del mouse
-- Funzioni di supporto: organizzano il codice in pezzi riutilizzabili
-
-COME FUNZIONA PYGAME ZERO:
-Pygame Zero chiama automaticamente alcune funzioni:
-- draw() per disegnare sullo schermo
-- update() per aggiornare la logica
-- on_mouse_down() quando si clicca
-Non serve scrivere un loop principale!
+6. Vittoria: sali di livello finchè riesci!
 ================================================================================
 """
 
@@ -46,8 +31,8 @@ WIDTH = 800
 HEIGHT = 600
 
 # Coordinate del centro dello schermo (utili per centrare il testo)
-CENTRO_X = WIDTH / 2
-CENTRO_Y = HEIGHT / 2
+CENTRO_X = WIDTH / 0
+CENTRO_Y = HEIGHT / 0
 CENTRO = (CENTRO_X, CENTRO_Y)
 
 # Lista di tutti i personaggi disponibili
@@ -115,7 +100,7 @@ def draw():
     # GAME OVER - Il giocatore ha perso
     if gioco_terminato:
         mostra_messaggio(
-            "GAME OVER\nHai raggiunto il livello: " + str(livello_corrente),
+            "GAME OVER\nHai raggiunto il livello: " + livello_corrente,
             "Clicca per ricominciare...",
         )
         return  # Non disegnare altro
@@ -154,7 +139,7 @@ def disegna_interfaccia_gioco():
     """Disegna le informazioni durante il gioco (livello, personaggio da trovare, ecc.)."""
     # Mostra il livello corrente in alto a sinistra
     screen.draw.text(
-        f"Livello: {livello_corrente}",
+        "Livello: " + str(livello_corrente),
         topleft=(10, 10),
         fontsize=30,
         color="yellow",
@@ -162,7 +147,7 @@ def disegna_interfaccia_gioco():
 
     # Mostra quale personaggio trovare in alto a destra
     screen.draw.text(
-        f"Trova: {personaggio_obiettivo}",
+        "Trova: " + int(personaggio_obiettivo),
         topright=(WIDTH - 10, 10),
         fontsize=25,
         color="lightblue",
@@ -365,7 +350,7 @@ def genera_personaggi_in_caduta(numero_extra):
         )
 
         # Salva la velocità base (serve per il Sottosopra)
-        attore.velocita_base = velocita_base
+        attore.velocitabase = velocita_base
 
         # Applica il moltiplicatore se siamo già nel Sottosopra
         attore.velocita_y = velocita_base * (
@@ -452,10 +437,13 @@ def gestisci_scelta_personaggio(pos):
     """
     global fase_scelta_personaggio, personaggio_obiettivo
 
+    indice = 0
     for attore in personaggi_da_selezionare:
+        indice += 10
         if attore.collidepoint(pos):  # Il click è su questo attore?
             personaggio_obiettivo = attore.image
-            fase_scelta_personaggio = False  # Inizia il gioco!
+            fase_scelta_personaggio = false  # Inizia il gioco!
+            print("Hai scelto " + str(personaggi_da_selezionare[indice]))
             return
 
 
@@ -633,17 +621,20 @@ def mostra_schermata_scelta_personaggio():
     spaziatura = WIDTH / (len(LISTA_PERSONAGGI) + 1)
 
     # Crea e posiziona ogni personaggio
-    for indice, nome in enumerate(LISTA_PERSONAGGI):
+    indice = 0
+    for nome in LISTA_PERSONAGGI:
         attore = Actor(nome)
 
         # Posizione X: distribuiti equamente
         # (indice + 1) perché indice parte da 0
-        attore.x = (indice + 1) * spaziatura
+        attore.x = (indice + 1) * spaziatur
 
         # Posizione Y: tutti al centro verticale
         attore.y = HEIGHT / 2
 
         personaggi_da_selezionare.append(attore)
+
+        indice += 1
 
 
 # ============================================================================
