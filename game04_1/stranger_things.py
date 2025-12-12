@@ -388,7 +388,10 @@ def scegli_personaggi_livello(num_extra):
     lista = [personaggio_obiettivo]
 
     # Crea una lista degli altri personaggi disponibili
-    altri = [p for p in LISTA_PERSONAGGI if p != personaggio_obiettivo]
+    altri = []
+    for p in LISTA_PERSONAGGI:
+        if p != personaggio_obiettivo:
+            altri.append(p)
 
     # Aggiungi personaggi casuali
     for _ in range(num_extra):
