@@ -1,153 +1,157 @@
 import random
 import polars as pl
 import pgzrun
+from pgzero.actor import Actor
 from types import SimpleNamespace
 
 WIDTH = 800
 HEIGHT = 600
-TITLE = "Wizarding Duel: The Final Battle"
+TITLE = "La Battaglia Finale"
 
-# --- State ---
-hp = {"Harry": 100, "Voldemort": 100}
-display = SimpleNamespace(Harry=100, Voldemort=100)
+punti_vita = {"Harry": 100, "Voldemort": 100}
+visualizzazione = SimpleNamespace(Harry=100, Voldemort=100)
 
-# Sprites (Ensure harry.png and voldemort.png are in the 'images' folder)
 harry_sprite = Actor('harry', (200, 320))
 voldy_sprite = Actor('voldemort', (600, 150))
 
-message = "A wild VOLDEMORT appeared!"
-sub_message = "What will HARRY do?"
-waiting_for_input = True 
-game_active = True
+messaggio = "VOLDEMORT è apparso!"
+descrizione = "Cosa farà HARRY?"
+attesa_input = True 
+gioco_attivo = True
 
-# --- Load Data ---
-spells_df = pl.read_csv(r"C:\Users\alema\Desktop\pythonbiella\LearningPythonWithGames\game11\spells.csv")
+# --- Caricamento Dati ---
+incantesimi_df = pl.read_csv(r"C:\Users\alema\Desktop\pythonbiella\LearningPythonWithGames\game11\spells.csv")
 
-def get_options(character):
-    return spells_df.filter(pl.col("character") == character)
+def ottieni_opzioni(personaggio):
+    return incantesimi_df.filter(pl.col("character") == personaggio)
 
-# --- Visual Effects ---
-
-def flash_hurt(sprite):
-    """Blinks the sprite and shakes it slightly."""
-    original_x = sprite.x
-    # Quick shake
-    animate(sprite, duration=0.1, x=original_x + 10, tween='bounce_end')
-    # Blink
+def flash_danno(sprite):
+    """Fa lampeggiare lo sprite e lo scuote leggermente."""
+    x_originale = sprite.x
+    # Scossa rapida
+    animate(sprite, duration=0.5, x=x_originale + 10, tween='bounce_end')
+    # Lampeggio
     for i in range(3):
         clock.schedule_unique(lambda: setattr(sprite, 'opacity', 0), i * 0.2)
         clock.schedule_unique(lambda: setattr(sprite, 'opacity', 255), i * 0.2 + 0.1)
-    # Reset position
-    clock.schedule_unique(lambda: setattr(sprite, 'x', original_x), 0.3)
+    # Ripristina posizione
+    clock.schedule_unique(lambda: setattr(sprite, 'x', x_originale), 0.3)
 
-# --- Logic Core ---
+# --- Logica di Gioco ---
 
-def execute_move(attacker_name, defender_name, spell_df, spell_index):
-    global message, sub_message, game_active
+def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incantesimo):
+    global messaggio, descrizione, gioco_attivo
     
-    dmg = float(spell_df[spell_index, "damage"])
-    precision = float(spell_df[spell_index, "precision"])
-    message = f"{attacker_name.upper()} used {spell_df[spell_index, 'spell'].upper()}!"
-    a = random.random()
-    spell_successful = a < precision 
-    print(a, precision)
-    if spell_successful:
-        if dmg < 0: # Healing
-            amt = abs(dmg)
-            hp[attacker_name] = min(100, hp[attacker_name] + amt)
-            sub_message = f"It recovered {amt} HP!"
-            animate(display, duration=0.6, **{attacker_name: hp[attacker_name]})
-        else: # Attacking
-            hp[defender_name] = max(0, hp[defender_name] - dmg)
-            sub_message = f"It dealt {dmg} damage!"
-            # Visual hurt effect
-            target_sprite = voldy_sprite if defender_name == "Voldemort" else harry_sprite
-            flash_hurt(target_sprite)
-            animate(display, duration=0.6, **{defender_name: hp[defender_name]})
+    danno = float(df_incantesimi[indice_incantesimo, "damage"])
+    precisione = float(df_incantesimi[indice_incantesimo, "precision"])
+    nome_incantesimo = df_incantesimi[indice_incantesimo, 'spell'].upper()
+    
+    messaggio = f"{nome_attaccante.upper()} usa {nome_incantesimo}!"
+    
+    probabilita = random.random()
+    successo = probabilita < precisione 
+    
+    if successo:
+        if danno < 0: # Cura
+            quantita = abs(danno)
+            punti_vita[nome_attaccante] = min(100, punti_vita[nome_attaccante] + quantita)
+            descrizione = f"Ha recuperato {quantita} PV!"
+            animate(visualizzazione, duration=0.6, **{nome_attaccante: punti_vita[nome_attaccante]})
+        else: # Attacco
+            punti_vita[nome_difensore] = max(0, punti_vita[nome_difensore] - danno)
+            descrizione = f"Ha inflitto {danno} danni!"
+            # Effetto visivo danno
+            target_sprite = voldy_sprite if nome_difensore == "Voldemort" else harry_sprite
+            flash_danno(target_sprite)
+            animate(visualizzazione, duration=0.6, **{nome_difensore: punti_vita[nome_difensore]})
     else:
-        sub_message = f"The spell did not work!"
+        descrizione = f"L'incantesimo è fallito!"
 
-    if hp[defender_name] <= 0:
-        game_active = False
-        message = f"{defender_name.upper()} fainted!"
-        sub_message = "The duel is over."
+    if punti_vita[nome_difensore] <= 0:
+        gioco_attivo = False
+        messaggio = f"{nome_difensore.upper()} è esausto!"
+        descrizione = "Il duello è terminato."
 
-# --- Turn Handlers ---
+# --- Gestione Turni ---
 
-def voldemort_phase():
-    """Voldemort picks a random spell and casts it."""
-    global message, sub_message
-    if not game_active: return
+def fase_voldemort():
+    """Voldemort sceglie un incantesimo casuale e lo lancia."""
+    global messaggio, descrizione
+    if not gioco_attivo: return
 
-    options = get_options("Voldemort")
-    spell_index = random.randint(1, len(options)) - 1
-    execute_move("Voldemort", "Harry", options, spell_index)
+    opzioni = ottieni_opzioni("Voldemort")
+    indice = random.randint(1, len(opzioni)) - 1
+    esegui_mossa("Voldemort", "Harry", opzioni, indice)
     
-    # After Voldemort moves, wait 2 seconds then let Harry play
-    if game_active:
-        clock.schedule_unique(ready_harry, 2.0)
+    # Dopo la mossa di Voldemort, aspetta 2 secondi e passa a Harry
+    if gioco_attivo:
+        clock.schedule_unique(prepara_harry, 2.0)
 
-def ready_harry():
-    """Resets the UI so Harry can choose a spell."""
-    global message, sub_message, waiting_for_input
-    message = "What will HARRY do?"
-    sub_message = "Select a spell..."
-    waiting_for_input = True
+def prepara_harry():
+    """Ripristina l'interfaccia per il turno di Harry."""
+    global messaggio, descrizione, attesa_input
+    messaggio = "Cosa farà HARRY?"
+    descrizione = "Scegli un incantesimo..."
+    attesa_input = True
 
 def on_mouse_down(pos):
-    global waiting_for_input
+    global attesa_input
     
-    if game_active and waiting_for_input:
-        options = get_options("Harry")[:4]
-        for i in range(len(options)):
+    if gioco_attivo and attesa_input:
+        opzioni = ottieni_opzioni("Harry")[:4]
+        for i in range(len(opzioni)):
             x = 40 + (i % 2) * 380
             y = 440 + (i // 2) * 60
             if Rect((x, y), (350, 50)).collidepoint(pos):
-                # Harry's action
-                waiting_for_input = False
-                execute_move("Harry", "Voldemort", options, i)
+                # Azione di Harry
+                attesa_input = False
+                esegui_mossa("Harry", "Voldemort", opzioni, i)
                 
-                # If Voldemort is still alive, he takes his turn in 2 seconds
-                if game_active:
-                    clock.schedule_unique(voldemort_phase, 2.0)
+                # Se Voldemort è ancora vivo, tocca a lui tra 2 secondi
+                if gioco_attivo:
+                    clock.schedule_unique(fase_voldemort, 2.0)
 
-# --- Draw Functions ---
+# --- Funzioni di Disegno ---
 
 def draw():
     screen.clear()
+    # Sfondo Cielo e Prato
     screen.draw.filled_rect(Rect((0, 0), (800, 400)), (200, 230, 255)) 
     screen.draw.filled_rect(Rect((0, 400), (800, 200)), (120, 180, 120)) 
 
     voldy_sprite.draw()
     harry_sprite.draw()
 
-    draw_status_box("VOLDEMORT", display.Voldemort, 50, 50)
-    draw_status_box("HARRY", display.Harry, 450, 250)
+    disegna_barra_stato("VOLDEMORT", visualizzazione.Voldemort, 50, 50)
+    disegna_barra_stato("HARRY", visualizzazione.Harry, 450, 250)
     
-    # Dialogue Box
+    # Box dei Dialoghi
     screen.draw.filled_rect(Rect((10, 410), (780, 180)), (50, 50, 60))
     screen.draw.rect(Rect((10, 410), (780, 180)), "white")
 
-    if waiting_for_input and game_active:
-        draw_move_menu()
+    if attesa_input and gioco_attivo:
+        disegna_menu_mosse()
     else:
-        screen.draw.text(message, (40, 450), fontsize=40, color="white")
-        screen.draw.text(sub_message, (40, 510), fontsize=30, color="lightgray")
+        screen.draw.text(messaggio, (40, 450), fontsize=40, color="white")
+        screen.draw.text(descrizione, (40, 510), fontsize=30, color="lightgray")
 
-def draw_status_box(name, val, x, y):
+def disegna_barra_stato(nome, valore, x, y):
     screen.draw.filled_rect(Rect((x, y), (300, 80)), "white")
     screen.draw.rect(Rect((x, y), (300, 80)), "black")
-    screen.draw.text(name, (x+20, y+15), color="black", fontsize=30)
+    screen.draw.text(nome, (x+20, y+15), color="black", fontsize=30)
     screen.draw.rect(Rect((x+100, y+45), (160, 15)), "black")
-    bw = (val / 100) * 158
-    c = "green" if val > 50 else "orange" if val > 20 else "red"
-    if bw > 0: screen.draw.filled_rect(Rect((x+101, y+46), (bw, 13)), c)
+    
+    larghezza_barra = (valore / 100) * 158
+    colore = "green" if valore > 50 else "orange" if valore > 20 else "red"
+    
+    if larghezza_barra > 0: 
+        screen.draw.filled_rect(Rect((x+101, y+46), (larghezza_barra, 13)), colore)
 
-def draw_move_menu():
-    opts = get_options("Harry")[:4]
-    for i in range(len(opts)):
+def disegna_menu_mosse():
+    opzioni = ottieni_opzioni("Harry")[:4]
+    for i in range(len(opzioni)):
         x, y = 40 + (i%2)*380, 440 + (i//2)*60
         screen.draw.rect(Rect((x, y), (350, 50)), "white")
-        screen.draw.text(f"> {opts[i, 'spell'].upper()}", (x+20, y+15), fontsize=30)
+        screen.draw.text(f"> {opzioni[i, 'spell'].upper()}", (x+20, y+15), fontsize=30)
 
 pgzrun.go()
