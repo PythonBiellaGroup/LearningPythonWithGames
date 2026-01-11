@@ -21,7 +21,10 @@ gioco_attivo = True
 
 # Creazione degli sprite
 harry_sprite = Actor("harry", (200, 320))
-voldy_sprite = Actor("voldemort", (600, 150))
+voldy_sprite = Actor("voldemort", (600, 100))
+
+# Variabile per memorizzare chi ha vinto
+vincitore = None
 
 # --- Caricamento Dati ---
 incantesimi_df = pl.read_csv(
@@ -61,7 +64,8 @@ def reset_gioco():
         messaggio, \
         descrizione, \
         attesa_input, \
-        gioco_attivo
+        gioco_attivo, \
+        vincitore
     punti_vita = {"Harry": 100, "Voldemort": 100}
     visualizzazione.Harry = 100
     visualizzazione.Voldemort = 100
@@ -71,12 +75,15 @@ def reset_gioco():
     gioco_attivo = True
     # Ripristina opacità
     harry_sprite.opacity = 255
+    harry_sprite.pos = (200, 320)
     voldy_sprite.opacity = 255
+    voldy_sprite.pos = (600, 100)
+    vincitore = None
 
 
 def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incantesimo):
     """Gestisce il calcolo dei danni, le cure e gli aggiornamenti grafici di una mossa."""
-    global messaggio, descrizione, gioco_attivo
+    global messaggio, descrizione, gioco_attivo, vincitore
 
     # Estrazione dati dal DataFrame
     danno = float(df_incantesimi[indice_incantesimo, "damage"])
@@ -122,17 +129,7 @@ def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incante
     # Controllo condizione di vittoria
     if punti_vita[nome_difensore] <= 0:
         gioco_attivo = False
-        messaggio = f"{nome_difensore.upper()} è esausto!"
-        descrizione = "Premi SPAZIO per ricominciare."
-
-
-# Gestione Input e Turni
-
-
-def on_key_down(key):
-    """Rileva la pressione dei tasti, usato qui per il riavvio."""
-    if not gioco_attivo and key == keys.SPACE:
-        reset_gioco()
+        vincitore = nome_attaccante
 
 
 def fase_voldemort():
@@ -142,7 +139,7 @@ def fase_voldemort():
         return
 
     opzioni = ottieni_opzioni("Voldemort")
-    indice = random.randint(1, len(opzioni)) - 1
+    indice = random.randint(0, len(opzioni) - 1)
     esegui_mossa("Voldemort", "Harry", opzioni, indice)
 
     # Se Harry è ancora vivo, torna il suo turno dopo 3 secondi
@@ -177,6 +174,12 @@ def on_mouse_down(pos):
                     clock.schedule_unique(fase_voldemort, 3.0)
 
 
+def on_key_down(key):
+    """Gestisce il riavvio con SPAZIO."""
+    if not gioco_attivo and key == keys.SPACE:
+        reset_gioco()
+
+
 # Funzioni di Disegno
 
 
@@ -184,27 +187,58 @@ def draw():
     """Disegna l'interfaccia di gioco ogni frame."""
     screen.clear()
     # Disegno ambiente (Cielo e Prato)
-    screen.draw.filled_rect(Rect((0, 0), (800, 400)), (200, 230, 255))
-    screen.draw.filled_rect(Rect((0, 400), (800, 200)), (120, 180, 120))
+    if gioco_attivo:
+        screen.draw.filled_rect(Rect((0, 0), (800, 400)), (200, 230, 255))
+        screen.draw.filled_rect(Rect((0, 400), (800, 200)), (120, 180, 120))
 
-    # Disegno personaggi
-    voldy_sprite.draw()
-    harry_sprite.draw()
+        # Disegno personaggi
+        voldy_sprite.draw()
+        harry_sprite.draw()
 
-    # Disegno barre della vita
-    disegna_barra_stato("VOLDEMORT", visualizzazione.Voldemort, 50, 50)
-    disegna_barra_stato("HARRY", visualizzazione.Harry, 450, 250)
+        # Disegno barre della vita
+        disegna_barra_stato("VOLDEMORT", visualizzazione.Voldemort, 50, 50)
+        disegna_barra_stato("HARRY", visualizzazione.Harry, 450, 250)
 
-    # Box dei Dialoghi / Menu (rettangolo scuro in basso)
-    screen.draw.filled_rect(Rect((10, 410), (780, 180)), (50, 50, 60))
-    screen.draw.rect(Rect((10, 410), (780, 180)), "white")
+        # Box dei Dialoghi / Menu (rettangolo scuro in basso)
+        screen.draw.filled_rect(Rect((10, 410), (780, 180)), (50, 50, 60))
+        screen.draw.rect(Rect((10, 410), (780, 180)), "white")
 
-    # Mostra il menu se è il turno del giocatore, altrimenti mostra i messaggi log
-    if attesa_input and gioco_attivo:
-        disegna_menu_mosse()
+        if attesa_input:
+            disegna_menu()
+        else:
+            screen.draw.text(messaggio, (40, 450), fontsize=40)
+            screen.draw.text(descrizione, (40, 510), fontsize=30, color="lightgray")
+
     else:
-        screen.draw.text(messaggio, (40, 450), fontsize=40, color="white")
-        screen.draw.text(descrizione, (40, 510), fontsize=30, color="lightgray")
+        # Schermata Finale: qualcuno ha vinto
+        if vincitore == "Harry":
+            screen.blit("vittoria", (0, 0))
+            screen.draw.text(
+                "HARRY HA VINTO!",
+                center=(WIDTH / 2, 100),
+                fontsize=70,
+                color="white",
+                shadow=(2, 2),
+            )
+            harry_sprite.pos = (WIDTH / 2, HEIGHT / 2)
+            harry_sprite.draw()
+        else:
+            screen.blit("sconfitta", (0, 0))
+            screen.draw.text(
+                "IL MALE HA PREVALSO...",
+                center=(WIDTH / 2, 100),
+                fontsize=60,
+                color="red",
+            )
+            voldy_sprite.pos = (WIDTH / 2, HEIGHT / 2)
+            voldy_sprite.draw()
+
+        screen.draw.text(
+            "Premi SPAZIO per un nuovo duello",
+            center=(WIDTH / 2, HEIGHT - 50),
+            fontsize=40,
+            color="white",
+        )
 
 
 def disegna_barra_stato(nome, valore, x, y):
@@ -224,7 +258,7 @@ def disegna_barra_stato(nome, valore, x, y):
         screen.draw.filled_rect(Rect((x + 101, y + 46), (larghezza_barra, 13)), colore)
 
 
-def disegna_menu_mosse():
+def disegna_menu():
     """Disegna le 4 opzioni di incantesimo cliccabili per Harry."""
     opzioni = ottieni_opzioni("Harry")[:4]
     for i in range(len(opzioni)):
@@ -235,5 +269,4 @@ def disegna_menu_mosse():
         )
 
 
-# Avvio del gioco
 pgzrun.go()
