@@ -32,6 +32,7 @@ incantesimi_df = pl.read_csv(
     r"C:\Users\alema\Desktop\pythonbiella\LearningPythonWithGames\game11\spells.csv"
 )
 
+
 def ottieni_opzioni(personaggio):
     """Filtra il DataFrame per ottenere solo gli incantesimi di un personaggio specifico."""
     return incantesimi_df.filter(pl.col("character") == personaggio)
@@ -154,6 +155,7 @@ def prepara_harry():
     opzioni_correnti = ottieni_opzioni("Harry").sample(4)
     attesa_input = True
 
+
 def on_mouse_down(pos):
     """Gestisce il click del mouse sulle opzioni degli incantesimi."""
     global attesa_input
@@ -263,8 +265,11 @@ def disegna_menu():
             x, y = 40 + (i % 2) * 380, 440 + (i // 2) * 60
             screen.draw.rect(Rect((x, y), (350, 50)), "white")
             screen.draw.text(
-                f"> {opzioni_correnti[i, 'spell'].upper()}", (x + 20, y + 15), fontsize=30
+                f"> {opzioni_correnti[i, 'spell'].upper()}",
+                (x + 20, y + 15),
+                fontsize=30,
             )
+
 
 prepara_harry()
 pgzrun.go()
