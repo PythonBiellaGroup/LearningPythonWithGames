@@ -1,8 +1,14 @@
 character,spell,damage,precision
 Harry,Expelliarmus,10,1
-Harry,Stupefy,15,1
+Harry,Stupeficium,15,1
 Harry,Expecto Patronum,20,1
-Harry, Epsikey, -25,1
+Harry, Episkey, -25,1
 Voldemort,Crucio,15,0.7
 Voldemort,Imperio,20,0.6
 Voldemort,Avada Kedavra,40,0.3
+Harry,Sectumsempra,35,1
+Harry,Confundus,5,1
+Voldemort,Legilimens,10,0.9
+Voldemort,Bombarda,30,0.8
+Voldemort,Confringo,25,0.85
+Voldemort,Expulso,20,0.9

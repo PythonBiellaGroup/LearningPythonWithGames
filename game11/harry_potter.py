@@ -18,6 +18,7 @@ messaggio = "VOLDEMORT è apparso!"
 descrizione = "Cosa farà HARRY?"
 attesa_input = True
 gioco_attivo = True
+opzioni_correnti = None  # Variabile per memorizzare gli incantesimi ad ogni turno
 
 # Creazione degli sprite
 harry_sprite = Actor("harry", (200, 320))
@@ -30,7 +31,6 @@ vincitore = None
 incantesimi_df = pl.read_csv(
     r"C:\Users\alema\Desktop\pythonbiella\LearningPythonWithGames\game11\spells.csv"
 )
-
 
 def ottieni_opzioni(personaggio):
     """Filtra il DataFrame per ottenere solo gli incantesimi di un personaggio specifico."""
@@ -148,26 +148,24 @@ def fase_voldemort():
 
 
 def prepara_harry():
-    """Ripristina il menu per il turno del giocatore."""
-    global messaggio, descrizione, attesa_input
+    global messaggio, descrizione, attesa_input, opzioni_correnti
     messaggio = "Cosa farà HARRY?"
     descrizione = "Scegli un incantesimo..."
+    opzioni_correnti = ottieni_opzioni("Harry").sample(4)
     attesa_input = True
-
 
 def on_mouse_down(pos):
     """Gestisce il click del mouse sulle opzioni degli incantesimi."""
     global attesa_input
 
-    if gioco_attivo and attesa_input:
-        opzioni = ottieni_opzioni("Harry")[:4]
-        for i in range(len(opzioni)):
+    if gioco_attivo and attesa_input and opzioni_correnti is not None:
+        for i in range(len(opzioni_correnti)):
             # Calcolo dinamico della posizione dei rettangoli cliccabili (2x2)
             x = 40 + (i % 2) * 380
             y = 440 + (i // 2) * 60
             if Rect((x, y), (350, 50)).collidepoint(pos):
                 attesa_input = False
-                esegui_mossa("Harry", "Voldemort", opzioni, i)
+                esegui_mossa("Harry", "Voldemort", opzioni_correnti, i)
 
                 # Turno di Voldemort dopo 3 secondi se non ha perso
                 if gioco_attivo:
@@ -259,14 +257,14 @@ def disegna_barra_stato(nome, valore, x, y):
 
 
 def disegna_menu():
-    """Disegna le 4 opzioni di incantesimo cliccabili per Harry."""
-    opzioni = ottieni_opzioni("Harry")[:4]
-    for i in range(len(opzioni)):
-        x, y = 40 + (i % 2) * 380, 440 + (i // 2) * 60
-        screen.draw.rect(Rect((x, y), (350, 50)), "white")
-        screen.draw.text(
-            f"> {opzioni[i, 'spell'].upper()}", (x + 20, y + 15), fontsize=30
-        )
+    """Disegna le opzioni precedentemente scelte in prepara_harry."""
+    if opzioni_correnti is not None:
+        for i in range(len(opzioni_correnti)):
+            x, y = 40 + (i % 2) * 380, 440 + (i // 2) * 60
+            screen.draw.rect(Rect((x, y), (350, 50)), "white")
+            screen.draw.text(
+                f"> {opzioni_correnti[i, 'spell'].upper()}", (x + 20, y + 15), fontsize=30
+            )
 
-
+prepara_harry()
 pgzrun.go()
