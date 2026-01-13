@@ -1,0 +1,267 @@
+# ⚡ La Battaglia Finale: Harry vs Voldemort
+
+Un gioco a turni realizzato con Pygame Zero per imparare la programmazione in Python in modo divertente e interattivo.
+
+![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
+![Pygame Zero](https://img.shields.io/badge/Pygame%20Zero-1.2%2B-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+![Educational](https://img.shields.io/badge/Purpose-Educational-red)
+
+## 📖 Descrizione
+
+Un gioco sviluppato a scopo didattico dove il giocatore controlla Harry Potter in un duello magico contro Voldemort. 
+Il progetto è stato creato per insegnare concetti di programmazione come:
+
+- 🎮 Game loop e gestione degli eventi
+- 📊 Manipolazione di dati con Polars
+- 🎨 Animazioni e effetti visivi
+- 🤖 Intelligenza artificiale base
+- 🎲 Generazione di numeri casuali e probabilità
+
+## ✨ Caratteristiche
+
+- **Sistema di combattimento a turni** con 4 incantesimi casuali per round
+- **Animazioni fluide** per danni, cure e effetti speciali
+- **Barre della vita dinamiche** con colori che cambiano in base ai PV
+- **IA semplice** per Voldemort che sceglie mosse casuali
+- **Sistema di precisione** - gli incantesimi possono fallire!
+- **Schermate di vittoria/sconfitta** personalizzate
+- **Rigiocabilità infinita** con il tasto SPAZIO
+
+## 🎯 Screenshot
+
+```
+┌─────────────────────────────────────────┐
+│  VOLDEMORT [████████░░] 80/100          │
+│                                         │
+│              🧙‍♂️                          │
+│                                         │
+│                    ⚡                    │
+│                                         │
+│         🧙                                │
+│  HARRY [██████████] 100/100             │
+│                                         │
+│  ┌───────────────────────────────────┐ │
+│  │ > EXPELLIARMUS    > PROTEGO       │ │
+│  │ > STUPEFY         > VULNERA SANENTUR │
+│  └───────────────────────────────────┘ │
+└─────────────────────────────────────────┘
+```
+
+## 🚀 Installazione
+
+### Prerequisiti
+
+- Python 3.8 o superiore
+- pip (gestore pacchetti Python)
+
+### Installazione delle dipendenze
+
+```bash
+# Clona il repository
+git clone https://github.com/tuousername/harry-vs-voldemort.git
+cd harry-vs-voldemort
+
+# Installa le dipendenze
+pip install pgzero polars
+```
+
+## 📁 Struttura del Progetto
+
+```
+harry-vs-voldemort/
+│
+├── game.py                 # File principale del gioco
+├── spells.csv             # Database degli incantesimi
+├── README.md              # Questo file
+│
+├── images/                # Cartella delle immagini
+│   ├── harry.png         # Sprite di Harry Potter
+│   ├── voldemort.png     # Sprite di Voldemort
+│   ├── vittoria.png      # Sfondo vittoria
+│   └── sconfitta.png     # Sfondo sconfitta
+│
+└── sounds/               # Cartella dei suoni (opzionale)
+    └── ...
+```
+
+## 🎮 Come Giocare
+
+```bash
+# Avvia il gioco
+python game.py
+
+# Oppure (se pgzrun è installato globalmente)
+pgzrun game.py
+```
+
+### Controlli
+
+- **Mouse**: Clicca su un incantesimo per lanciarlo
+- **SPAZIO**: Riavvia il gioco dopo una vittoria/sconfitta
+
+### Regole
+
+1. Ogni turno, Harry ha 4 incantesimi casuali tra cui scegliere
+2. Ogni incantesimo ha:
+   - **Danno**: quanto HP toglie (o recupera se negativo)
+   - **Precisione**: probabilità di successo (0.0 - 1.0)
+3. Dopo la tua mossa, Voldemort risponde automaticamente
+4. Vince chi riduce a 0 gli HP dell'avversario
+
+## 📊 File CSV degli Incantesimi
+
+Il file `spells.csv` contiene tutti gli incantesimi disponibili:
+
+```csv
+character,spell,damage,precision
+Harry,Expelliarmus,15,0.9
+Harry,Stupefy,20,0.75
+Harry,Protego,-10,1.0
+Harry,Vulnera Sanentur,-25,0.8
+Voldemort,Avada Kedavra,40,0.6
+Voldemort,Crucio,25,0.8
+Voldemort,Imperio,30,0.7
+```
+
+### Formato dei dati
+
+- `character`: "Harry" o "Voldemort"
+- `spell`: Nome dell'incantesimo
+- `damage`: Danno inflitto (negativo = cura)
+- `precision`: Probabilità di successo (0.0 = 0%, 1.0 = 100%)
+
+## 🎓 Aspetti Didattici
+
+Questo progetto è perfetto per imparare:
+
+### 1. **Gestione dello Stato**
+```python
+punti_vita = {"Harry": 100, "Voldemort": 100}
+gioco_attivo = True
+attesa_input = True
+```
+
+### 2. **Animazioni con Pygame Zero**
+```python
+animate(sprite, duration=0.5, x=x_originale + 10, tween="bounce_end")
+clock.schedule_unique(funzione, 2.0)
+```
+
+### 3. **Manipolazione Dati con Polars**
+```python
+incantesimi_df = pl.read_csv("spells.csv")
+opzioni = incantesimi_df.filter(pl.col("character") == "Harry").sample(4)
+```
+
+### 4. **Probabilità e Casualità**
+```python
+successo = random.random() < precisione
+indice = random.randint(0, len(opzioni) - 1)
+```
+
+### 5. **Event-Driven Programming**
+```python
+def on_mouse_down(pos):
+    # Gestisce i click
+    
+def on_key_down(key):
+    # Gestisce i tasti
+
+def draw():
+    # Rendering grafico
+```
+
+## 🛠️ Personalizzazione
+
+### Aggiungi nuovi incantesimi
+
+Modifica `spells.csv` aggiungendo righe:
+
+```csv
+Harry,Expecto Patronum,-30,0.9
+Voldemort,Fiendfyre,50,0.5
+```
+
+### Modifica i parametri di gioco
+
+Nel file `game.py`:
+
+```python
+WIDTH = 800          # Larghezza finestra
+HEIGHT = 600         # Altezza finestra
+PUNTI_VITA_INIZIALI = 100  # HP iniziali
+```
+
+### Cambia le animazioni
+
+```python
+# Velocità animazione danni
+animate(visualizzazione, duration=0.6, ...)  # Cambia duration
+
+# Tempo tra i turni
+clock.schedule_unique(fase_voldemort, 3.0)  # Cambia il delay
+```
+
+## 🐛 Troubleshooting
+
+### Problema: "ModuleNotFoundError: No module named 'pgzero'"
+
+**Soluzione:**
+```bash
+pip install pgzero
+```
+
+### Problema: "FileNotFoundError: spells.csv"
+
+**Soluzione:** Assicurati che `spells.csv` sia nella stessa cartella di `game.py`
+
+### Problema: "FileNotFoundError: images/harry.png"
+
+**Soluzione:** 
+- Crea una cartella `images/` nella directory del progetto
+- Aggiungi le immagini `harry.png`, `voldemort.png`, `vittoria.png`, `sconfitta.png`
+
+### Problema: Gli sprite non si vedono
+
+**Soluzione:** Pygame Zero cerca le immagini senza estensione:
+```python
+Actor("harry")  # Cerca "harry.png" in images/
+```
+
+## 🤝 Contribuire
+
+Contributi, issues e richieste di funzionalità sono benvenute!
+
+1. Fai un Fork del progetto
+2. Crea un branch per la tua feature (`git checkout -b feature/NuovaFeature`)
+3. Commit delle modifiche (`git commit -m 'Aggiungi NuovaFeature'`)
+4. Push al branch (`git push origin feature/NuovaFeature`)
+5. Apri una Pull Request
+
+
+## 📚 Risorse per Imparare
+
+- [Documentazione Pygame Zero](https://pygame-zero.readthedocs.io/)
+- [Polars User Guide](https://pola-rs.github.io/polars/user-guide/)
+- [Tutorial Python ufficiale](https://docs.python.org/it/3/tutorial/)
+
+## 📝 Licenza
+
+Questo progetto è distribuito sotto licenza MIT. Vedi il file `LICENSE` per maggiori dettagli.
+
+## 👤 Autore
+
+Python Biella Group
+
+## 🙏 Ringraziamenti
+
+- Pygame Zero per il framework semplice e potente
+- La community di Python per le librerie fantastiche
+- J.K. Rowling per l'universo di Harry Potter (uso educativo)
+
+---
+
+⭐ Se questo progetto ti è stato utile per imparare, lascia una stella su GitHub!
+
+**Fatto con ❤️ e Python per scopi didattici**
