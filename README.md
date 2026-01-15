@@ -247,9 +247,8 @@ Hai creato un nuovo gioco? Hai migliorato uno esistente? **Contribuisci!**
 
 ## 💬 Community e Supporto
 
-- 💬 **Discord**: [Python Biella Group](https://discord.gg/pythonbiella) *(link da aggiornare)*
-- 🐦 **Twitter**: [@PythonBiella](https://twitter.com/pythonbiella) *(link da aggiornare)*
-- 📧 **Email**: info@pythonbiellagroup.it *(email da verificare)*
+- 💬 **Telegram**: [Python Biella Group](https://t.me/pythonbiellagroup) 
+- 🤝 **Sito**: [PythonBiellaGroup](https://pythonbiellagroup.it/)
 
 ---
 
