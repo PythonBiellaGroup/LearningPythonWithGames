@@ -41,7 +41,7 @@ vincitore = None
 # ===== CARICAMENTO DATI ESTERNI =====
 # Legge il file CSV contenente tutti gli incantesimi disponibili
 # Il CSV deve avere colonne: character, spell, damage, precision
-incantesimi_df = pl.read_csv(r"spells.csv")
+incantesimi_df = pl.read_csv("spells.csv")
 
 
 # ========================================================================
