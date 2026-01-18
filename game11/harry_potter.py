@@ -1,13 +1,12 @@
 # ========================================================================
 # LA BATTAGLIA FINALE - HARRY VS VOLDEMORT
-# Un gioco a turni realizzato con Pygame Zero per imparare la programmazione
 # ========================================================================
 
-import random  # Per generare numeri casuali (utile per l'IA e la precisione degli incantesimi)
+import random
 import polars as pl  # Libreria per gestire dati in formato tabellare (come Excel/CSV)
-import pgzrun  # Modulo che avvia il game loop di Pygame Zero
-from pgzero.actor import Actor  # Classe per gestire gli sprite (personaggi grafici)
-from types import SimpleNamespace  # Permette di creare oggetti semplici con attributi animabili
+import pgzrun
+from pgzero.actor import Actor
+from pgzero.clock import clock
 
 # ===== CONFIGURAZIONE INIZIALE =====
 # Queste costanti definiscono le dimensioni della finestra di gioco
@@ -19,46 +18,48 @@ TITLE = "La Battaglia Finale: Harry vs Voldemort"  # Titolo della finestra
 # Dizionario che tiene traccia dei punti vita di ciascun personaggio
 punti_vita = {"Harry": 100, "Voldemort": 100}
 
-# SimpleNamespace crea un oggetto i cui attributi possono essere animati fluentemente
-# Serve per far scendere/salire gradualmente le barre della vita
-visualizzazione = SimpleNamespace(Harry=100, Voldemort=100)
+# Dizionario per i valori visualizzati nelle barre (aggiornati gradualmente)
+# Separato da punti_vita per permettere animazioni fluide
+visualizzazione_punti_vita = {"Harry": 100, "Voldemort": 100}
+
+# Lista che tiene traccia di tutte le animazioni delle barre in corso
+animazioni_attive = []
 
 # Variabili che controllano il flusso del gioco
-messaggio = "VOLDEMORT è apparso!"  # Testo principale mostrato a schermo
-descrizione = "Cosa farà HARRY?"  # Testo secondario (spiegazioni)
+messaggio = "VOLDEMORT è apparso!"
+descrizione = "Cosa farà HARRY?"
 attesa_input = True  # True = è il turno del giocatore, False = animazione in corso
 gioco_attivo = True  # True = partita in corso, False = qualcuno ha vinto
 opzioni_correnti = None  # Conterrà i 4 incantesimi casuali del turno corrente
 
 # ===== CREAZIONE DEGLI SPRITE (PERSONAGGI GRAFICI) =====
-# Actor è una classe di Pygame Zero che gestisce immagini posizionabili
-harry_sprite = Actor("harry", (200, 320))  # Immagine "harry.png" nella cartella images/
-voldy_sprite = Actor("voldemort", (600, 100))  # Immagine "voldemort.png"
+harry_sprite = Actor("harry", (200, 320))
+voldy_sprite = Actor("voldemort", (600, 100))
 
 # Variabile per salvare chi ha vinto la partita
 vincitore = None
 
 # ===== CARICAMENTO DATI ESTERNI =====
 # Legge il file CSV contenente tutti gli incantesimi disponibili
-# Il CSV deve avere colonne: character, spell, damage, precision
 incantesimi_df = pl.read_csv("spells.csv")
 
 
 # ========================================================================
-# FUNZIONI DI UTILITÀ
+# FUNZIONI DI SUPPORTO
 # ========================================================================
+
 
 def ottieni_opzioni(personaggio):
     """
     Filtra il DataFrame per ottenere solo gli incantesimi di un personaggio.
-    
+
     DIDATTICA: Questa funzione usa Polars per filtrare righe, come si farebbe
-    con Excel usando i filtri. Restituisce solo le righe dove la colonna 
+    con Excel usando i filtri. Restituisce solo le righe dove la colonna
     "character" corrisponde al personaggio richiesto.
-    
+
     Args:
         personaggio (str): "Harry" o "Voldemort"
-    
+
     Returns:
         DataFrame Polars con solo gli incantesimi del personaggio
     """
@@ -69,64 +70,97 @@ def ottieni_opzioni(personaggio):
 # EFFETTI VISIVI
 # ========================================================================
 
+
 def flash_danno(sprite):
     """
     Crea un effetto visivo quando un personaggio subisce danni.
     Lo sprite vibra orizzontalmente e lampeggia 3 volte.
-    
+
     Questa funzione dimostra l'uso di:
     - animate(): anima proprietà dell'oggetto (es. posizione X)
     - clock.schedule_unique(): esegue codice dopo un certo tempo
     - lambda: funzione anonima per codice breve
     - setattr(): modifica attributi di un oggetto dinamicamente
-    
+
     Args:
         sprite (Actor): lo sprite da animare
     """
     x_originale = sprite.x  # Salva posizione X iniziale
-    
+
     # Anima lo spostamento orizzontale con effetto "rimbalzo"
     animate(sprite, duration=0.5, x=x_originale + 10, tween="bounce_end")
-    
+
     # Ciclo che fa lampeggiare lo sprite 3 volte
     for i in range(3):
-        # Ogni 0.5 secondi: sprite invisibile (opacity=0)
         clock.schedule_unique(lambda: setattr(sprite, "opacity", 0), i * 0.5)
-        # Dopo 0.1 secondi: sprite riappare (opacity=255)
         clock.schedule_unique(lambda: setattr(sprite, "opacity", 255), i * 0.5 + 0.1)
-    
+
     # Dopo 0.6 secondi ripristina la posizione originale
     clock.schedule_unique(lambda: setattr(sprite, "x", x_originale), 0.6)
+
+
+def anima_barra(personaggio, valore_finale):
+    """
+    Avvia l'animazione graduale della barra vita di un personaggio.
+
+    Invece di cambiare istantaneamente il valore, questa funzione crea
+    un'animazione che viene gestita dalla funzione update() del game loop.
+    L'animazione viene aggiunta alla lista animazioni_attive.
+
+    DIDATTICA: Questo è il pattern standard per le animazioni nei videogiochi.
+    Invece di programmare tanti piccoli aggiornamenti, definiamo l'animazione
+    e lasciamo che il game loop la aggiorni frame per frame.
+
+    Args:
+        personaggio (str): "Harry" o "Voldemort"
+        valore_finale (int): valore PV da raggiungere (0-100)
+    """
+    valore_iniziale = visualizzazione_punti_vita[personaggio]
+
+    # Crea un dizionario con tutti i dati necessari per l'animazione
+    animazione = {
+        "personaggio": personaggio,
+        "valore_iniziale": valore_iniziale,
+        "valore_finale": valore_finale,
+        "tempo_trascorso": 0,  # Contatore che aumenta ogni frame
+        "durata": 0.6,  # Durata totale in secondi
+    }
+
+    # Aggiungi l'animazione alla lista globale
+    animazioni_attive.append(animazione)
 
 
 # ========================================================================
 # LOGICA DI GIOCO
 # ========================================================================
 
+
 def reset_gioco():
     """
     Ripristina tutte le variabili allo stato iniziale per una nuova partita.
-    
-    Quando si usa 'global', si indica che vogliamo modificare
-    variabili definite fuori dalla funzione, non crearne di nuove locali.
     """
-    global punti_vita, visualizzazione, messaggio, descrizione, attesa_input, \
-           gioco_attivo, vincitore
-    
-    # Resetta i punti vita
+    global \
+        punti_vita, \
+        visualizzazione_punti_vita, \
+        messaggio, \
+        descrizione, \
+        attesa_input, \
+        gioco_attivo, \
+        vincitore
+
+    # Resetta i punti vita (sia reali che visualizzati)
     punti_vita = {"Harry": 100, "Voldemort": 100}
-    visualizzazione.Harry = 100
-    visualizzazione.Voldemort = 100
-    
+    visualizzazione_punti_vita = {"Harry": 100, "Voldemort": 100}
+
     # Resetta i messaggi
     messaggio = "Nuovo Duello!"
     descrizione = "Cosa farà HARRY?"
-    
+
     # Resetta lo stato del gioco
     attesa_input = True
     gioco_attivo = True
     vincitore = None
-    
+
     # Ripristina grafica degli sprite
     harry_sprite.opacity = 255  # Completamente visibile
     harry_sprite.pos = (200, 320)  # Posizione originale
@@ -134,17 +168,55 @@ def reset_gioco():
     voldy_sprite.pos = (600, 100)
 
 
+def update(dt):
+    """
+    Funzione chiamata automaticamente da Pygame Zero ogni frame (60 volte/sec).
+    Aggiorna tutte le animazioni delle barre vita in corso.
+
+    DIDATTICA: Questa è una delle 3 funzioni speciali di Pygame Zero:
+    - draw(): disegna a schermo
+    - update(dt): aggiorna la logica del gioco
+    - on_mouse_down/on_key_down: gestiscono input
+
+    Args:
+        dt (float): delta time - tempo trascorso dall'ultimo frame in secondi
+                   (circa 0.016 secondi = 1/60 per giochi a 60 FPS)
+    """
+    # Lavora su una copia della lista per poterla modificare durante l'iterazione
+    # [:] crea una copia superficiale della lista
+    for animazione in animazioni_attive[:]:
+        # Incrementa il tempo trascorso per questa animazione
+        animazione["tempo_trascorso"] += dt
+
+        # Calcola quanto è completa l'animazione (0.0 = inizio, 1.0 = fine)
+        progresso = min(animazione["tempo_trascorso"] / animazione["durata"], 1.0)
+
+        # Calcola il valore intermedio usando interpolazione lineare
+        # Formula: inizio + (fine - inizio) * progresso
+        valore = (
+            animazione["valore_iniziale"]
+            + (animazione["valore_finale"] - animazione["valore_iniziale"]) * progresso
+        )
+
+        # Aggiorna il dizionario di visualizzazione (che viene letto da draw())
+        visualizzazione_punti_vita[animazione["personaggio"]] = valore
+
+        # Se l'animazione è completa, rimuovila dalla lista
+        if progresso >= 1.0:
+            animazioni_attive.remove(animazione)
+
+
 def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incantesimo):
     """
     Gestisce l'esecuzione di un incantesimo: calcola danni/cure e aggiorna lo stato.
-    
+
     Questa è la funzione centrale del gioco. Mostra:
     - Accesso ai dati del DataFrame con [riga, colonna]
     - Logica condizionale (if/else)
     - Uso di random.random() per probabilità
     - Manipolazione di dizionari
-    - Animazioni
-    
+    - Avvio di animazioni
+
     Args:
         nome_attaccante (str): chi lancia l'incantesimo
         nome_difensore (str): chi lo subisce
@@ -152,58 +224,53 @@ def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incante
         indice_incantesimo (int): quale riga del DataFrame usare
     """
     global messaggio, descrizione, gioco_attivo, vincitore
-    
+
     # ===== ESTRAZIONE DATI DAL CSV =====
     # Accediamo alla riga specificata e prendiamo i valori delle colonne
     danno = float(df_incantesimi[indice_incantesimo, "damage"])
     precisione = float(df_incantesimi[indice_incantesimo, "precision"])
     nome_incantesimo = df_incantesimi[indice_incantesimo, "spell"].upper()
-    
+
     # Aggiorna il messaggio principale
     messaggio = f"{nome_attaccante.upper()} usa {nome_incantesimo}!"
-    
+
     # ===== CALCOLO SUCCESSO =====
     # random.random() restituisce un numero tra 0 e 1
     # Se è minore della precisione (es. 0.8 = 80%), l'incantesimo riesce
     successo = random.random() < precisione
-    
+
     if successo:
         # ===== CASO 1: INCANTESIMO DI CURA (danno negativo) =====
         if danno < 0:
             quantita = abs(danno)  # Converte in positivo (es. -20 → 20)
             # Aumenta PV ma non oltre 100 (min/max limitano i valori)
-            punti_vita[nome_attaccante] = min(100, punti_vita[nome_attaccante] + quantita)
-            descrizione = f"Ha recuperato {quantita} PV!"
-            
-            # Anima la barra che sale gradualmente
-            # **{...} spacchetta il dizionario in parametri nominati
-            animate(
-                visualizzazione,
-                duration=0.6,
-                **{nome_attaccante: punti_vita[nome_attaccante]}
+            punti_vita[nome_attaccante] = min(
+                100, punti_vita[nome_attaccante] + quantita
             )
-        
+            descrizione = f"Ha recuperato {quantita} PV!"
+
+            # Avvia l'animazione della barra che sale gradualmente
+            anima_barra(nome_attaccante, punti_vita[nome_attaccante])
+
         # ===== CASO 2: INCANTESIMO DI ATTACCO (danno positivo) =====
         else:
             # Riduce PV ma non sotto zero
             punti_vita[nome_difensore] = max(0, punti_vita[nome_difensore] - danno)
             descrizione = f"Ha inflitto {danno} danni!"
-            
+
             # Determina quale sprite far lampeggiare
-            target_sprite = voldy_sprite if nome_difensore == "Voldemort" else harry_sprite
-            flash_danno(target_sprite)  # Attiva l'effetto visivo
-            
-            # Anima la barra che scende gradualmente
-            animate(
-                visualizzazione,
-                duration=0.6,
-                **{nome_difensore: punti_vita[nome_difensore]}
+            target_sprite = (
+                voldy_sprite if nome_difensore == "Voldemort" else harry_sprite
             )
-    
+            flash_danno(target_sprite)  # Attiva l'effetto visivo
+
+            # Avvia l'animazione della barra che scende gradualmente
+            anima_barra(nome_difensore, punti_vita[nome_difensore])
+
     # ===== CASO 3: INCANTESIMO FALLITO =====
     else:
-        descrizione = f"L'incantesimo è fallito!"
-    
+        descrizione = "L'incantesimo è fallito!"
+
     # ===== CONTROLLO VITTORIA =====
     # Se i PV del difensore sono a 0, la partita finisce
     if punti_vita[nome_difensore] <= 0:
@@ -219,25 +286,20 @@ def termina_gioco():
 
 
 def fase_voldemort():
-    """
-    Intelligenza artificiale di Voldemort: sceglie un incantesimo casuale.
-    
-    Questa funzione dimostra come creare un'IA base.
-    Voldemort non ha strategia, sceglie a caso tra i suoi incantesimi.
-    """
+    """Voldemort sceglie un incantesimo casuale."""
     global messaggio, descrizione
-    
+
     # Se il gioco è finito, non fare nulla
     if not gioco_attivo:
         return
-    
+
     # Ottiene tutti gli incantesimi di Voldemort
     opzioni = ottieni_opzioni("Voldemort")
     # Sceglie un indice casuale
     indice = random.randint(0, len(opzioni) - 1)
     # Esegue l'incantesimo
     esegui_mossa("Voldemort", "Harry", opzioni, indice)
-    
+
     # Se Harry è ancora vivo, dopo 3 secondi è di nuovo il suo turno
     if gioco_attivo:
         clock.schedule_unique(prepara_harry, 3.0)
@@ -246,15 +308,15 @@ def fase_voldemort():
 def prepara_harry():
     """
     Prepara il turno del giocatore: seleziona 4 incantesimi casuali tra quelli di Harry.
-    
+
     .sample(4) prende 4 righe casuali dal DataFrame.
     Questo crea varietà: ogni turno il giocatore ha opzioni diverse.
     """
     global messaggio, descrizione, attesa_input, opzioni_correnti
-    
+
     messaggio = "Cosa farà HARRY?"
     descrizione = "Scegli un incantesimo..."
-    
+
     # Estrae 4 incantesimi casuali di Harry
     opzioni_correnti = ottieni_opzioni("Harry").sample(4)
     attesa_input = True  # Ora il giocatore può cliccare
@@ -264,24 +326,24 @@ def prepara_harry():
 # GESTIONE INPUT UTENTE
 # ========================================================================
 
+
 def on_mouse_down(pos):
     """
     Funzione chiamata automaticamente da Pygame Zero quando si clicca col mouse.
     Gestisce la selezione degli incantesimi.
-    
+
     Mostra come:
     - Rilevare click del mouse
     - Calcolare posizioni dinamiche (griglia 2x2)
     - Usare Rect.collidepoint() per collision detection
-    
+
     Args:
         pos (tuple): coordinate (x, y) del click
     """
     global attesa_input
-    
+
     # Controlla che sia il momento giusto per cliccare
     if gioco_attivo and attesa_input and opzioni_correnti is not None:
-        
         # Cicla sui 4 incantesimi disponibili
         for i in range(len(opzioni_correnti)):
             # ===== CALCOLO POSIZIONE GRIGLIA 2x2 =====
@@ -289,12 +351,12 @@ def on_mouse_down(pos):
             # i // 2 → riga (0 o 1)
             x = 40 + (i % 2) * 380  # Colonna: 40 o 420
             y = 440 + (i // 2) * 60  # Riga: 440 o 500
-            
+
             # Crea un rettangolo e controlla se il click è dentro
             if Rect((x, y), (350, 50)).collidepoint(pos):
                 attesa_input = False  # Disabilita ulteriori click
                 esegui_mossa("Harry", "Voldemort", opzioni_correnti, i)
-                
+
                 # Dopo 3 secondi, se Voldemort è vivo, tocca a lui
                 if gioco_attivo:
                     clock.schedule_unique(fase_voldemort, 3.0)
@@ -304,9 +366,9 @@ def on_key_down(key):
     """
     Funzione chiamata quando si preme un tasto.
     Permette di riavviare il gioco con SPAZIO.
-    
+
     Pygame Zero chiama automaticamente questa funzione.
-    
+
     Args:
         key: costante che rappresenta il tasto premuto
     """
@@ -319,34 +381,39 @@ def on_key_down(key):
 # RENDERING GRAFICO
 # ========================================================================
 
+
 def draw():
     """
     Funzione chiamata automaticamente da Pygame Zero 60 volte al secondo.
     Disegna tutto ciò che appare sullo schermo.
-    
+
     Questa funzione è il "cuore grafico" del gioco.
     Viene eseguita continuamente (game loop) per aggiornare la schermata.
     """
     screen.clear()  # Cancella il frame precedente
-    
+
     # ===== SCHERMATA DI GIOCO =====
     if gioco_attivo:
         # Sfondo: cielo azzurro e prato verde
         screen.draw.filled_rect(Rect((0, 0), (800, 400)), (200, 230, 255))  # Cielo
         screen.draw.filled_rect(Rect((0, 400), (800, 200)), (120, 180, 120))  # Prato
-        
+
         # Disegna i personaggi
         voldy_sprite.draw()
         harry_sprite.draw()
-        
-        # Disegna le barre della vita
-        disegna_barra_stato("VOLDEMORT", visualizzazione.Voldemort, 50, 50)
-        disegna_barra_stato("HARRY", visualizzazione.Harry, 450, 250)
-        
+
+        # Disegna le barre della vita (usa i valori animati)
+        disegna_barra_stato(
+            "VOLDEMORT", visualizzazione_punti_vita["Voldemort"], 50, 50
+        )
+        disegna_barra_stato("HARRY", visualizzazione_punti_vita["Harry"], 450, 250)
+
         # ===== BOX MESSAGGI/MENU IN BASSO =====
-        screen.draw.filled_rect(Rect((10, 410), (780, 180)), (50, 50, 60))  # Sfondo scuro
+        screen.draw.filled_rect(
+            Rect((10, 410), (780, 180)), (50, 50, 60)
+        )  # Sfondo scuro
         screen.draw.rect(Rect((10, 410), (780, 180)), "white")  # Bordo bianco
-        
+
         # Se è il turno del giocatore, mostra il menu
         if attesa_input:
             disegna_menu()
@@ -354,7 +421,7 @@ def draw():
         else:
             screen.draw.text(messaggio, (40, 450), fontsize=40)
             screen.draw.text(descrizione, (40, 510), fontsize=30, color="lightgray")
-    
+
     # ===== SCHERMATA FINALE =====
     else:
         if vincitore == "Harry":
@@ -365,7 +432,7 @@ def draw():
                 center=(WIDTH / 2, 100),
                 fontsize=70,
                 color="white",
-                shadow=(2, 2)  # Ombreggiatura per leggibilità
+                shadow=(2, 2),  # Ombreggiatura per leggibilità
             )
             harry_sprite.pos = (WIDTH / 2, HEIGHT / 2)  # Centra Harry
             harry_sprite.draw()
@@ -376,27 +443,27 @@ def draw():
                 "IL MALE HA PREVALSO...",
                 center=(WIDTH / 2, 100),
                 fontsize=60,
-                color="red"
+                color="red",
             )
             voldy_sprite.pos = (WIDTH / 2, HEIGHT / 2)  # Centra Voldemort
             voldy_sprite.draw()
-        
+
         # Istruzioni per riavviare
         screen.draw.text(
             "Premi SPAZIO per un nuovo duello",
             center=(WIDTH / 2, HEIGHT - 50),
             fontsize=40,
-            color="white"
+            color="white",
         )
 
 
 def disegna_barra_stato(nome, valore, x, y):
     """
     Disegna un riquadro con nome del personaggio e barra della vita.
-    
+
     Esempio di grafica procedurale - creiamo elementi visuali
     con forme geometriche semplici.
-    
+
     Args:
         nome (str): nome da visualizzare
         valore (float): punti vita attuali (0-100)
@@ -405,17 +472,17 @@ def disegna_barra_stato(nome, valore, x, y):
     # Rettangolo bianco di sfondo
     screen.draw.filled_rect(Rect((x, y), (300, 80)), "white")
     screen.draw.rect(Rect((x, y), (300, 80)), "black")  # Bordo nero
-    
+
     # Nome del personaggio
     screen.draw.text(nome, (x + 20, y + 15), color="black", fontsize=30)
-    
+
     # Cornice della barra (nera)
     screen.draw.rect(Rect((x + 100, y + 45), (160, 15)), "black")
-    
+
     # ===== CALCOLO BARRA PROPORZIONALE =====
     # La barra è lunga 158 pixel al massimo
     larghezza_barra = (valore / 100) * 158
-    
+
     # Colore dinamico: verde → arancione → rosso
     if valore > 50:
         colore = "green"
@@ -423,19 +490,16 @@ def disegna_barra_stato(nome, valore, x, y):
         colore = "orange"
     else:
         colore = "red"
-    
+
     # Disegna la barra solo se ci sono PV rimasti
     if larghezza_barra > 0:
-        screen.draw.filled_rect(
-            Rect((x + 101, y + 46), (larghezza_barra, 13)),
-            colore
-        )
+        screen.draw.filled_rect(Rect((x + 101, y + 46), (larghezza_barra, 13)), colore)
 
 
 def disegna_menu():
     """
     Disegna i 4 incantesimi selezionabili in una griglia 2x2.
-    
+
     Mostra come visualizzare dati da un DataFrame in modo interattivo.
     """
     if opzioni_correnti is not None:
@@ -443,15 +507,15 @@ def disegna_menu():
             # Calcolo posizione (stesso algoritmo di on_mouse_down)
             x = 40 + (i % 2) * 380
             y = 440 + (i // 2) * 60
-            
+
             # Rettangolo cliccabile
             screen.draw.rect(Rect((x, y), (350, 50)), "white")
-            
+
             # Testo dell'incantesimo
             screen.draw.text(
                 f"> {opzioni_correnti[i, 'spell'].upper()}",
                 (x + 20, y + 15),
-                fontsize=30
+                fontsize=30,
             )
 
 
@@ -463,5 +527,4 @@ def disegna_menu():
 prepara_harry()
 
 # Avvia il game loop di Pygame Zero
-# Questo fa sì che draw() venga chiamata 60 volte/sec e gestisce eventi
 pgzrun.go()
