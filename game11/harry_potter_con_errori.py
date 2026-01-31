@@ -31,7 +31,7 @@ gioco_attivo = True  # True = partita in corso, False = qualcuno ha vinto
 opzioni_correnti = None  # Conterrà i 4 incantesimi casuali del turno corrente
 
 # ===== CREAZIONE DEGLI SPRITE (PERSONAGGI GRAFICI) =====
-harry_sprite = Actor("harry", (200, 320))
+harry_sprite = actor("harry", (200, 320))
 voldy_sprite = Actor("voldemort", (600, 100))
 
 # Variabile per salvare chi ha vinto la partita
@@ -39,7 +39,7 @@ vincitore = None
 
 # ===== CARICAMENTO DATI ESTERNI =====
 # Legge il file CSV contenente tutti gli incantesimi disponibili
-incantesimi_df = pl.read_csv("spells.csv")
+incantesimi_df = pl.read_csv("spells.xlsx")
 
 
 # ========================================================================
@@ -61,7 +61,7 @@ def ottieni_opzioni(personaggio):
     Returns:
         DataFrame Polars con solo gli incantesimi del personaggio
     """
-    return incantesimi_df.filter(pl.col("character") == personaggio)
+    return incantesimi_df.filter(pl.col("charac") == personaggio)
 
 
 # ========================================================================
@@ -142,10 +142,10 @@ def update():
     Funzione chiamata automaticamente da Pygame Zero ogni frame (60 volte/sec).
     Aggiorna le barre della vita facendole scorrere verso il valore reale.
     """
-    global display_punti_vita_harry, display_punti_vita_voldemort
+    global display_punti_vita_voldemort
 
     # Velocità di aggiornamento della barra
-    velocita = 1 
+    velocita = "1"
 
     # Anima barra Harry
     if display_punti_vita_harry > punti_vita_harry:
@@ -174,7 +174,7 @@ def esegui_mossa(nome_attaccante, nome_difensore, df_incantesimi, indice_incante
 
     # ===== ESTRAZIONE DATI DAL CSV =====
     # Accediamo alla riga specificata e prendiamo i valori delle colonne
-    danno = float(df_incantesimi[indice_incantesimo, "damage"])
+    danno = float(df_incantesimi["damage", indice_incantesimo])
     precisione = float(df_incantesimi[indice_incantesimo, "precision"])
     nome_incantesimo = df_incantesimi[indice_incantesimo, "spell"].upper()
 
