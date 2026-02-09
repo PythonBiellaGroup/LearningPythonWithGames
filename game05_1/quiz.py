@@ -73,16 +73,29 @@ def prossima_domanda():
 def init_file_risposte():
     """Crea il file risposte con header se non esiste."""
     if not os.path.exists(NOME_FILE_RISPOSTE):
-        with open(NOME_FILE_RISPOSTE, mode='w', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            writer.writerow(["nome_utente", "id_domanda", "numero_risposta_fornita", "tempo_risposta"])
+        df = pl.DataFrame({
+            "nome_utente": pl.Series([], dtype=pl.Utf8),
+            "id_domanda": pl.Series([], dtype=pl.Int64),
+            "numero_risposta_fornita": pl.Series([], dtype=pl.Int64),
+            "tempo_risposta": pl.Series([], dtype=pl.Int64),
+        })
+        df.write_csv(NOME_FILE_RISPOSTE)
 
 
 def salva_risposta(nome, id_dom, numero_risposta, tempo_risposta):
     init_file_risposte()
-    with open(NOME_FILE_RISPOSTE, mode='a', newline='', encoding='utf-8') as f:
-        writer = csv.writer(f)
-        writer.writerow([nome, id_dom, numero_risposta, tempo_risposta])
+
+    nuova_riga = pl.DataFrame({
+        "nome_utente": [str(nome)],
+        "id_domanda": [int(id_dom)],
+        "numero_risposta_fornita": [int(numero_risposta)],
+        "tempo_risposta": [int(tempo_risposta)],
+    })
+
+    # Append leggendo + concatenando (approccio semplice e robusto)
+    df_esistente = pl.read_csv(NOME_FILE_RISPOSTE)
+    df_finale = pl.concat([df_esistente, nuova_riga])
+    df_finale.write_csv(NOME_FILE_RISPOSTE)([nome, id_dom, numero_risposta, tempo_risposta])
 
 
 # ───────────────── DISEGNO ─────────────────
@@ -200,6 +213,7 @@ def on_key_down(key):
             nome_utente += ch
         return
 
+
 def tick():
     global secondi_mancanti
     if not game_over and not entering_name:
@@ -218,7 +232,7 @@ def tick():
             prossima_domanda()
 
 
-# ───────────────── CONTROLLO START ─────────────────
+# ───────────────── CONTROLLO START / RESTART ─────────────────
 
 def start_game():
     global entering_name, nome_utente
