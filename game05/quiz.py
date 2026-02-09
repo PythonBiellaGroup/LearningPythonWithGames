@@ -130,7 +130,7 @@ def on_mouse_down(pos):
     indice = 1
     for box in risposte:
         if box.collidepoint(pos):
-            # int(domanda[5] è la risposta corretta
+            # int(domanda[5]) è la risposta corretta
             if indice is int(domanda[5]):
                 risposta_corretta()
             else:
