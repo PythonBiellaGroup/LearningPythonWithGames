@@ -1,10 +1,11 @@
 import pgzrun
 import polars as pl
+import csv
 import os
 from pgzero.keyboard import keys
 
 # ───────────────── CONFIG ─────────────────
-TITLE = "Cyber Quiz Polars Edition"
+TITLE = "Cyber Quiz"
 WIDTH = 900
 HEIGHT = 600
 TEMPO_DOMANDA = 15
@@ -20,7 +21,7 @@ COLOR_SHADOW = (5, 5, 15)
 TEXT_MAIN = (255, 255, 255)
 
 # ───────────────── STATO ─────────────────
-lista_domande = []  # Qui finira il nostro mazzo rimescolato
+lista_domande = []  # Qui finirà il nostro mazzo rimescolato
 domanda_corrente = None
 indice_domande = 0
 contatore_totale = 0
@@ -35,9 +36,14 @@ nome_utente = ""
 
 # Box
 question_box = Rect(50, 90, 800, 150)
-answer_boxes = [Rect(50, 300, 380, 110), Rect(470, 300, 380, 110),
-                Rect(50, 430, 380, 110), Rect(470, 430, 380, 110)]
+answer_boxes = [
+    Rect(50, 300, 380, 110),
+    Rect(470, 300, 380, 110),
+    Rect(50, 430, 380, 110),
+    Rect(470, 430, 380, 110),
+]
 timer_bar_box = Rect(50, 260, 800, 12)
+
 
 # ───────────────── LOGICA DATI CON POLARS ─────────────────
 def carica_e_mischia():
@@ -71,31 +77,36 @@ def prossima_domanda():
 
 # ───────────────── SALVATAGGIO RISPOSTE ─────────────────
 def init_file_risposte():
-    """Crea il file risposte con header se non esiste."""
+    """Crea il file risposte con header se non esiste (usando csv)."""
     if not os.path.exists(NOME_FILE_RISPOSTE):
-        df = pl.DataFrame({
-            "nome_utente": pl.Series([], dtype=pl.Utf8),
-            "id_domanda": pl.Series([], dtype=pl.Int64),
-            "numero_risposta_fornita": pl.Series([], dtype=pl.Int64),
-            "tempo_risposta": pl.Series([], dtype=pl.Int64),
-        })
-        df.write_csv(NOME_FILE_RISPOSTE)
+        with open(NOME_FILE_RISPOSTE, mode="w", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow(
+                [
+                    "nome_utente",
+                    "id_domanda",
+                    "numero_risposta_fornita",
+                    "tempo_risposta",
+                ]
+            )
 
 
-def salva_risposta(nome, id_dom, numero_risposta, tempo_risposta):
+def salva_risposta(nome, id_domanda, numero_risposta, tempo_risposta):
+    """Append della risposta al CSV (una riga). id_domanda può essere None -> scriviamo vuoto."""
     init_file_risposte()
 
-    nuova_riga = pl.DataFrame({
-        "nome_utente": [str(nome)],
-        "id_domanda": [int(id_dom)],
-        "numero_risposta_fornita": [int(numero_risposta)],
-        "tempo_risposta": [int(tempo_risposta)],
-    })
+    # Normalizziamo i valori per sicurezza
+    nome_s = str(nome) if nome is not None else ""
+    id_s = "" if id_domanda is None else str(id_domanda)
+    num_s = str(int(numero_risposta)) if numero_risposta is not None else ""
+    tempo_s = str(int(tempo_risposta)) if tempo_risposta is not None else ""
 
-    # Append leggendo + concatenando (approccio semplice e robusto)
-    df_esistente = pl.read_csv(NOME_FILE_RISPOSTE)
-    df_finale = pl.concat([df_esistente, nuova_riga])
-    df_finale.write_csv(NOME_FILE_RISPOSTE)([nome, id_dom, numero_risposta, tempo_risposta])
+    try:
+        with open(NOME_FILE_RISPOSTE, mode="a", newline="", encoding="utf-8") as f:
+            writer = csv.writer(f)
+            writer.writerow([nome_s, id_s, num_s, tempo_s])
+    except Exception as e:
+        print(f"Errore salvataggio risposta: {e}")
 
 
 # ───────────────── DISEGNO ─────────────────
@@ -109,37 +120,76 @@ def draw():
 
     # Se siamo nella fase di inserimento nickname
     if entering_name:
-        screen.draw.text("Benvenuto a Cyber Quiz!", center=(WIDTH // 2, 120), fontsize=48, color=COLOR_ACCENT)
-        screen.draw.text("Inserisci il tuo nickname e premi ENTER per iniziare:", center=(WIDTH // 2, 180), fontsize=28, color=TEXT_MAIN)
+        screen.draw.text(
+            "Benvenuto a Cyber Quiz!",
+            center=(WIDTH // 2, 120),
+            fontsize=48,
+            color=COLOR_ACCENT,
+        )
+        screen.draw.text(
+            "Inserisci il tuo nickname e premi ENTER per iniziare:",
+            center=(WIDTH // 2, 180),
+            fontsize=28,
+            color=TEXT_MAIN,
+        )
 
         # box input
         input_box = Rect(WIDTH // 2 - 300, 230, 600, 60)
         draw_styled_rect(input_box, COLOR_CARD)
         display_name = nome_utente if nome_utente != "" else "(digita qui...)"
-        screen.draw.text(display_name, center=input_box.center, fontsize=36, color=TEXT_MAIN)
+        screen.draw.text(
+            display_name, center=input_box.center, fontsize=36, color=TEXT_MAIN
+        )
         return
 
     if game_over:
-        screen.draw.text(f"SESSIONE FINITA\nPunteggio: {punteggio}/{contatore_totale}",
-                         center=(WIDTH // 2, HEIGHT // 2), fontsize=50, color=COLOR_ACCENT)
+        screen.draw.text(
+            f"SESSIONE FINITA\nPunteggio: {punteggio}/{contatore_totale}",
+            center=(WIDTH // 2, HEIGHT // 2),
+            fontsize=50,
+            color=COLOR_ACCENT,
+        )
         return
 
     # Info
-    screen.draw.text(f"GIOCATORE: {nome_utente}", (50, 20), color=COLOR_ACCENT, fontsize=22)
-    screen.draw.text(f"DOMANDA {indice_domande}/{contatore_totale}", (50, 50), color=COLOR_ACCENT, fontsize=22)
-    screen.draw.text(f"PUNTI: {punteggio}", (WIDTH - 150, 20), color=TEXT_MAIN, fontsize=25)
+    screen.draw.text(
+        f"GIOCATORE: {nome_utente}", (50, 20), color=COLOR_ACCENT, fontsize=22
+    )
+    screen.draw.text(
+        f"DOMANDA {indice_domande}/{contatore_totale}",
+        (50, 50),
+        color=COLOR_ACCENT,
+        fontsize=22,
+    )
+    screen.draw.text(
+        f"PUNTI: {punteggio}", (WIDTH - 150, 20), color=TEXT_MAIN, fontsize=25
+    )
 
     # Box Domanda
     draw_styled_rect(question_box, COLOR_CARD)
     if domanda_corrente:
-        screen.draw.textbox(str(domanda_corrente.get('domanda', '')) , question_box.inflate(-40, -40), color=TEXT_MAIN)
+        screen.draw.textbox(
+            str(domanda_corrente.get("domanda", "")),
+            question_box.inflate(-40, -40),
+            color=TEXT_MAIN,
+        )
     else:
-        screen.draw.textbox("Caricamento...", question_box.inflate(-40, -40), color=TEXT_MAIN)
+        screen.draw.textbox(
+            "Caricamento...", question_box.inflate(-40, -40), color=TEXT_MAIN
+        )
 
     # Timer Progressivo
     percent = secondi_mancanti / TEMPO_DOMANDA if TEMPO_DOMANDA > 0 else 0
     screen.draw.filled_rect(timer_bar_box, COLOR_SHADOW)
-    screen.draw.filled_rect(Rect(timer_bar_box.x, timer_bar_box.y, int(timer_bar_box.w * percent), timer_bar_box.h), COLOR_ACCENT)
+    screen.draw.filled_rect(
+        Rect(
+            timer_bar_box.x,
+            timer_bar_box.y,
+            int(timer_bar_box.w * percent),
+            timer_bar_box.h,
+        ),
+        COLOR_ACCENT,
+    )
 
     # Risposte
     for i in range(4):
@@ -148,7 +198,11 @@ def draw():
         is_hover = box.collidepoint(mouse_pos)
         draw_styled_rect(box, (60, 60, 90) if is_hover else COLOR_CARD)
         if domanda_corrente:
-            screen.draw.textbox(str(domanda_corrente.get(chiave, '')), box.inflate(-20, -20), color=TEXT_MAIN)
+            screen.draw.textbox(
+                str(domanda_corrente.get(chiave, "")),
+                box.inflate(-20, -20),
+                color=TEXT_MAIN,
+            )
 
 
 # ───────────────── INPUT & TIMER ─────────────────
@@ -169,20 +223,25 @@ def on_mouse_down(pos):
             # tempo di risposta = tempo passato dalla visualizzazione (tempo iniziale - secondi_mancanti)
             tempo_risposta = TEMPO_DOMANDA - secondi_mancanti
             # Troviamo un id per la domanda: preferiamo campi 'id_domanda' o 'id', altrimenti usiamo l'indice attuale
-            id_dom = None
+            id_domanda = None
             if domanda_corrente is not None:
-                id_dom = domanda_corrente.get('id_domanda') if 'id_domanda' in domanda_corrente else domanda_corrente.get('id')
-            if id_dom is None:
-                id_dom = indice_domande
+                # se è salvato come stringa nel CSV, manteniamo la stringa (salveremo come testo)
+                id_domanda = (
+                    domanda_corrente.get("id_domanda")
+                    if "id_domanda" in domanda_corrente
+                    else domanda_corrente.get("id")
+                )
+            if id_domanda is None:
+                id_domanda = indice_domande
 
             numero_risposta = i + 1
 
             # Salviamo la risposta nel CSV
-            salva_risposta(nome_utente, id_dom, numero_risposta, tempo_risposta)
+            salva_risposta(nome_utente, id_domanda, numero_risposta, tempo_risposta)
 
             # Controlliamo correttezza (forziamo a stringa)
             try:
-                if str(numero_risposta) == str(domanda_corrente.get('corretta')):
+                if str(numero_risposta) == str(domanda_corrente.get("corretta")):
                     punteggio += 1
             except Exception:
                 pass
@@ -221,18 +280,22 @@ def tick():
             secondi_mancanti -= 1
         else:
             # se finisce il tempo, salviamo una risposta vuota/timeout
-            # id domanda
-            id_dom = None
+            id_domanda = None
             if domanda_corrente is not None:
-                id_dom = domanda_corrente.get('id_domanda') if 'id_domanda' in domanda_corrente else domanda_corrente.get('id')
-            if id_dom is None:
-                id_dom = indice_domande
+                id_domanda = (
+                    domanda_corrente.get("id_domanda")
+                    if "id_domanda" in domanda_corrente
+                    else domanda_corrente.get("id")
+                )
+            if id_domanda is None:
+                id_domanda = indice_domande
             # numero_risposta 0 per timeout
-            salva_risposta(nome_utente, id_dom, 0, TEMPO_DOMANDA)
+            salva_risposta(nome_utente, id_domanda, 0, TEMPO_DOMANDA)
             prossima_domanda()
 
 
 # ───────────────── CONTROLLO START / RESTART ─────────────────
+
 
 def start_game():
     global entering_name, nome_utente
@@ -245,6 +308,7 @@ def start_game():
         clock.schedule_interval(tick, 1.0)
     except Exception:
         pass
+
 
 # AVVIO: non carichiamo automaticamente le domande, aspettiamo il nickname
 init_file_risposte()
