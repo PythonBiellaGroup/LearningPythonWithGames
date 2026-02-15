@@ -1,0 +1,21 @@
+id_domanda,domanda,risposta_1,risposta_2,risposta_3,risposta_4
+1,Cosa succede se si accede a lista[5] ma la lista ha 2 elementi?,Restituisce None,Errore IndexError,Restituisce 0,Python ignora
+2,Qual è lo scopo della funzione update() in pgzero?,Creare liste,Stampare output,Aggiornare lo stato del gioco,Leggere input
+3,Perché dividere il codice in funzioni?,Per usare meno variabili,Per evitare errori,Per velocità,Per renderlo più leggibile e riutilizzabile
+4,Cosa fa il metodo .append() in una lista?,Rimuove elementi,Aggiunge un elemento alla fine,Ordina la lista,Conta gli elementi
+5,Quale tipo di dato restituisce input()?,Intero,Lista,Stringa,Booleano
+6,Come si commenta una singola riga in Python?,// commento,/* commento */,# commento,-- commento
+7,Cosa fa range(5)?,Numeri da 1 a 5,Numeri da 0 a 5,Numeri da 0 a 4,Numeri da 1 a 4
+8,Quale operatore si usa per l'elevamento a potenza?,^,**,pow,^2
+9,Cosa restituisce len([1 2 3])?,2,Errore,3,4
+10,Come si definisce una funzione in Python?,function nome(),def nome():,func nome(),define nome()
+11,Qual è il risultato di 10 // 3?,3.33,3,4,3.0
+12,Come si crea un dizionario vuoto?,{},dict(),[],Entrambe {} e dict()
+13,Quale ciclo si usa quando non si sa quante iterazioni servono?,for,while,loop,repeat
+14,Cosa fa il metodo .split() su una stringa?,Unisce stringhe,Conta caratteri,Divide la stringa in lista,Rimuove spazi
+15,Come si accede al primo elemento di una lista chiamata 'numeri'?,numeri[1],numeri.first(),numeri[0],numeri(0)
+16,Quale parola chiave si usa per gestire le eccezioni?,catch,try,error,handle
+17,Cosa restituisce type(5.0)?,int,float,number,decimal
+18,Come si concatenano due stringhe 'a' e 'b'?,a + b,a & b,a.join(b),concat(a b)
+19,Quale metodo ordina una lista sul posto?,order(),sort(),sorted(),arrange()
+20,Cosa fa l'operatore % (modulo)?,Divisione,Moltiplicazione,Resto della divisione,Percentuale

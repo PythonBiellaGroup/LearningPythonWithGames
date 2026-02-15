@@ -1,0 +1,21 @@
+id_domanda,domanda,risposta_1,risposta_2,risposta_3,risposta_4
+1,Cosa succede se si accede a lista[5] ma la lista ha 2 elementi?,Restituisce None,Errore,Restituisce 0,Python ignora
+2,Qual è lo scopo della funzione update() in pgzero?,Creare liste,Stampare output,Aggiornare lo stato del gioco,Leggere input
+3,Perché dividere il codice in funzioni?,Per usare meno variabili,Per evitare errori,Per velocità,Per renderlo più leggibile e riutilizzabile
+4,Quando è più corretto usare un ciclo while?,Quando si scorre una lista,Quando non si conosce il numero di iterazioni,Mai,Sempre
+5,Cosa controlla una condizione if?,Il punteggio,Una decisione logica,Il loop,La grafica
+6,Perché si inizializzano le variabili prima del loop?,Per stile,Non serve,Per evitare valori non definiti,Per velocità
+7,Cosa succede se una funzione non viene mai chiamata?,Blocca il programma,Va in errore,Esegue comunque,Non viene eseguita
+8,Perché Python usa l’indentazione?,Per compatibilità,Per velocità,Per sicurezza,Per definire i blocchi di codice
+9,Qual è la differenza tra = e == ?,Entrambi assegnano,Assegnazione e confronto,Nessuna differenza,Entrambi confrontano
+10,"Cosa restituisce len([1,2,3])?",1,Errore,2,3
+11,Quale metodo aggiunge un elemento in fondo a una lista?,push(),insert(),append(),add()
+12,Cosa succede se una condizione if è falsa?,Il programma si ferma,Va in errore,Il blocco non viene eseguito,Il loop termina
+13,Cosa succede se manca l’indentazione corretta in un if?,Il blocco è ignorato,Python corregge,Il codice funziona,Errore
+14,Quale nome di variabile è valido in Python?,player-score,player_score,2player,player score
+15,Cosa fa break in un ciclo while?,Riavvia il ciclo,Interrompe il ciclo,Ferma il programma,Salta un’iterazione
+16,Cosa fa continue in un ciclo?,Riavvia il loop,Interrompe il ciclo,Ferma il programma,Salta all’iterazione successiva
+17,Cosa succede se si sommano due stringhe in Python?,Risultato numerico,Vengono concatenate, Risultato numerico negativo,Errore
+18,Quale parola chiave definisce una funzione in Python?,lambda,function,def,fun
+19,Cosa succede se una lista è vuota e si accede a lista[0]?,Esplosione,Python ignora,Errore,0
+20,Come si crea una lista vuota?,Abracadabra,[],(),{}
