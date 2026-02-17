@@ -130,7 +130,7 @@ def draw():
         # box input
         input_box = Rect(WIDTH // 2 - 300, 230, 600, 60)
         draw_styled_rect(input_box, COLOR_CARD)
-        display_name = nome_utente if nome_utente != "" else "(digita qui...)"
+        display_name = nome_utente if nome_utente != "" else "(digita il tuo nome...)"
         screen.draw.text(
             display_name, center=input_box.center, fontsize=36, color=TEXT_MAIN
         )
