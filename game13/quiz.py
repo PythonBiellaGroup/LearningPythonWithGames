@@ -5,7 +5,7 @@ import os
 from pgzero.keyboard import keys
 
 # ───────────────── CONFIG ─────────────────
-TITLE = "Cyber Quiz"
+TITLE = "Quizzone"
 WIDTH = 900
 HEIGHT = 600
 TEMPO_DOMANDA = 15  # secondi totali
