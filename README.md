@@ -47,8 +47,12 @@ Questo repository contiene una **collezione progressiva di giochi** creati con *
 | **game02_1** - Tony alla Ricerca della Musica | ⭐⭐ Medio | Ricerca file, debugging, percorsi |
 | **game04_1** - Stranger Stars | ⭐⭐⭐ Difficile | Debug avanzato, correzione errori |
 | **game11** - La Battaglia Finale: Harry vs Voldemort | ⭐⭐⭐⭐ Avanzato | 🔥 **CSV, Polars, DataFrames, AI base, sistema a turni** |
+| **game12** - Space Data Commander | ⭐⭐⭐ Difficile | 🚀 **Polars, dizionari, scoring, grafico a barre in-game** |
+| **game13** - Quizzone + Dashboard | ⭐⭐⭐⭐ Avanzato | 📊 **Polars, CSV, Streamlit, analisi dati multi-studente** |
+| **game14** - MEMO | ⭐⭐ Medio | 🃏 **Liste, timer, stato, gioco di memoria a coppie** |
+| **game15** - Dobble | ⭐⭐⭐ Difficile | 🔵 **Macchina a stati, timer, immagini, parsing stringhe** |
 
-> 💡 **Novità!** Il game11 introduce concetti di **Data Science** e **AI/ML** usando Polars per gestire dati tabulari (incantesimi) e creare un'intelligenza artificiale per Voldemort!
+> 💡 I giochi **game11**, **game12** e **game13** introducono concetti di **Data Science** con Polars: raccolta dati in-game, analisi statistica, scoring e dashboard interattive con Streamlit.
 
 ---
 
@@ -77,8 +81,11 @@ python --version
 # Installa PyGame Zero
 pip install pgzero
 
-# Per il game11 (Battaglia Harry vs Voldemort)
+# Per il game11 (Battaglia Harry vs Voldemort) e game12 (Space Data Commander)
 pip install polars
+
+# Per il game13 (Quizzone + Dashboard)
+pip install polars streamlit
 ```
 
 ### Clona il Repository
@@ -111,6 +118,19 @@ LearningPythonWithGames/
 │   ├── harry_voldemort.py
 │   ├── spells.csv        # Database incantesimi
 │   └── images/           # Sprite e sfondi
+├── game12/               # Space Data Commander (Polars + esplorazione)
+│   ├── space_data_commander.py
+│   └── planets_data.csv  # Generato durante il gioco
+├── game13/               # Quizzone + Dashboard (Polars + Streamlit)
+│   ├── quiz.py           # Gioco quiz con salvataggio risposte
+│   ├── aggregatore_csv.py # Aggrega le risposte di tutti gli studenti
+│   ├── dashboard_quiz.py  # Dashboard Streamlit per l'insegnante
+│   └── domande.csv       # Domande del quiz
+├── game14/               # MEMO (gioco di memoria a coppie)
+│   └── memo.py
+├── game15/               # Dobble (trova il simbolo uguale)
+│   ├── dobble.py
+│   └── images/           # Immagini dei simboli (PNG)
 ├── images/               # Risorse grafiche condivise
 ├── sounds/               # Effetti sonori (se presenti)
 └── README.md
@@ -151,12 +171,29 @@ LearningPythonWithGames/
 
 ### 🔵 **Livello 4: Data & AI** (Settimana 7+)
 12. game11 - Harry vs Voldemort
+13. game12 - Space Data Commander
+14. game13 - Quizzone + Dashboard
 
 **Cosa impari:** 
 - 📊 Lavorare con CSV e DataFrames (Polars)
 - 🤖 Creare un'AI semplice
 - 🎯 Sistema a turni
 - 📈 Manipolazione dati tabulari
+- 🚀 Raccolta dati in-game e scoring
+- 🖥️ Dashboard interattive con Streamlit
+
+---
+
+### 🟣 **Livello 5: Giochi Classici Completi** (Settimana 8+)
+15. game14 - MEMO
+16. game15 - Dobble
+
+**Cosa impari:**
+- 🃏 Logica di memoria e coppie
+- 🔵 Macchina a stati complessa
+- ⏱️ Timer e gestione del tempo di risposta
+- 🖼️ Caricamento e rendering di immagini
+- 📝 Parsing di dati strutturati da stringhe
 
 ---
 
@@ -164,8 +201,9 @@ LearningPythonWithGames/
 
 - **Python 3.8+** - Linguaggio di programmazione
 - **PyGame Zero** - Framework per creare giochi senza complessità
-- **Polars** (game11) - Libreria velocissima per DataFrames
-- **CSV** (game11) - Formato per salvare dati tabulari
+- **Polars** (game11, game12, game13) - Libreria velocissima per DataFrames
+- **CSV** (game11, game12, game13) - Formato per salvare dati tabulari
+- **Streamlit** (game13) - Framework per creare dashboard web interattive
 
 ---
 
